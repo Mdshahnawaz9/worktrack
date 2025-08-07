@@ -1,8 +1,9 @@
+// src/pages/Dashboard.jsx
 import React from "react";
 import Layout from "../components/Layout";
 import StatCard from "../components/StatCard";
 
-const Dashboard = ({ onLogout }) => {
+const Dashboard = () => {
   const stats = [
     { title: "Total Tasks", value: "8" },
     { title: "Hours Tracked", value: "32h" },
@@ -11,9 +12,8 @@ const Dashboard = ({ onLogout }) => {
   ];
 
   return (
-    <Layout onLogout={onLogout}>
-      <h1 className="text-2xl font-bold mb-4">Welcome to Dashboard</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+    <Layout>
+      <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
           <StatCard key={index} title={stat.title} value={stat.value} />
         ))}
