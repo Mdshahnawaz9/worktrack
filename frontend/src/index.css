@@ -1,8 +1,43 @@
-/* src/index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #9ca3af; /* Tailwind slate-400 */
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #6b7280; /* Tailwind slate-500 */
+}
+
+/* Smooth transitions for theme toggle */
+html {
+  scroll-behavior: smooth;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 body {
+  @apply bg-white text-gray-900 dark:bg-gray-900 dark:text-white;
   font-family: 'Inter', sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Utility classes */
+.card-shadow {
+  @apply shadow-md dark:shadow-lg;
+}
+
+.link-hover {
+  @apply hover:underline cursor-pointer;
 }
