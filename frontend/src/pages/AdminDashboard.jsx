@@ -1,48 +1,37 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import StatCard from "../components/StatCard";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
+    users: 0,
     tasks: 0,
-    hours: 0,
     documents: 0,
-    leaves: 0,
+    feedbacks: 0,
   });
 
   useEffect(() => {
-    // Fetching real-time user-entered data from localStorage
+    const users = JSON.parse(localStorage.getItem("users")) || [];
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    const timeEntries = JSON.parse(localStorage.getItem("timeTracking")) || [];
     const documents = JSON.parse(localStorage.getItem("documents")) || [];
-    const leaves = JSON.parse(localStorage.getItem("leaves")) || [];
-
-    const totalHours = timeEntries.reduce(
-      (sum, entry) => sum + (entry.hours || 0),
-      0
-    );
+    const feedbacks = JSON.parse(localStorage.getItem("feedbacks")) || [];
 
     setStats({
+      users: users.length,
       tasks: tasks.length,
-      hours: totalHours,
       documents: documents.length,
-      leaves: leaves.length,
+      feedbacks: feedbacks.length,
     });
   }, []);
 
-  const statData = [
-    { title: "Total Tasks", value: stats.tasks.toString() },
-    { title: "Hours Tracked", value: `${stats.hours}h` },
-    { title: "Documents", value: stats.documents.toString() },
-    { title: "Leave Requests", value: stats.leaves.toString() },
-  ];
-
   return (
     <Layout>
-      <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {statData.map((stat, index) => (
-          <StatCard key={index} title={stat.title} value={stat.value} />
-        ))}
+      <h1 className="text-2xl font-bold mb-4 text-center">Admin Dashboard</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <StatCard title="Total Users" value={stats.users} />
+        <StatCard title="Total Tasks" value={stats.tasks} />
+        <StatCard title="Documents Uploaded" value={stats.documents} />
+        <StatCard title="Feedback Entries" value={stats.feedbacks} />
       </div>
     </Layout>
   );
