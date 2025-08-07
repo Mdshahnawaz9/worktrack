@@ -12,7 +12,15 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     localStorage.setItem("user", JSON.stringify(form));
-    navigate("/dashboard");
+
+    // Admin email check
+    if (form.email === "admin@worktrackpro.com") {
+      localStorage.setItem("role", "admin");
+      navigate("/admindashboard");
+    } else {
+      localStorage.setItem("role", "user");
+      navigate("/dashboard");
+    }
   };
 
   return (
