@@ -1,15 +1,26 @@
-// src/pages/Dashboard.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import StatCard from "../components/StatCard";
 
 const Dashboard = () => {
-  const stats = [
-    { title: "Total Tasks", value: "8" },
-    { title: "Hours Tracked", value: "32h" },
-    { title: "Documents", value: "12" },
-    { title: "Leave Requests", value: "2" },
-  ];
+  const [user, setUser] = useState(null);
+  const [stats, setStats] = useState([]);
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (storedUser) {
+      setUser(storedUser);
+
+      // Example: Generate stats from user data
+      const generatedStats = [
+        { title: "Total Tasks", value: storedUser.tasks?.length || "0" },
+        { title: "Hours Tracked", value: storedUser.hoursTracked || "0h" },
+        { title: "Documents", value: storedUser.documents?.length || "0" },
+        { title: "Leave Requests", value: storedUser.leaves?.length || "0" },
+      ];
+      setStats(generatedStats);
+    }
+  }, []);
 
   return (
     <Layout>
