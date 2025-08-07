@@ -1,53 +1,57 @@
+// src/pages/Login.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({ email: "", password: "" });
 
-  const handleLogin = (e) => {
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-
-    if (
-      storedUser &&
-      storedUser.email === email &&
-      storedUser.password === password
-    ) {
-      localStorage.setItem("isLoggedIn", "true");
-      navigate("/dashboard");
-    } else {
-      alert("Invalid credentials");
-    }
+    localStorage.setItem("user", JSON.stringify(form));
+    navigate("/dashboard");
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <h2 className="text-2xl font-bold mb-4">Login</h2>
-      <form onSubmit={handleLogin} className="w-full max-w-sm space-y-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md w-80"
+      >
+        <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+          Login
+        </h2>
         <input
           type="email"
+          name="email"
           placeholder="Email"
+          onChange={handleChange}
           required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-2 border rounded"
+          className="w-full mb-3 p-2 border rounded"
         />
         <input
           type="password"
+          name="password"
           placeholder="Password"
+          onChange={handleChange}
           required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 border rounded"
+          className="w-full mb-3 p-2 border rounded"
         />
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
         >
           Login
         </button>
+        <p
+          className="text-sm text-center mt-3 text-blue-500 cursor-pointer"
+          onClick={() => navigate("/signup")}
+        >
+          Don't have an account? Sign up
+        </p>
       </form>
     </div>
   );
