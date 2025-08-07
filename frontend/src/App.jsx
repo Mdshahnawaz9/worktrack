@@ -27,69 +27,31 @@ function App() {
       <Router>
         <Routes>
 
-          {/* Public Routes */}
+          {/* ✅ Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
 
-          {/* Protected Routes for Users */}
-          <Route
-            path="/dashboard"
-            element={<AuthWrapper><Dashboard /></AuthWrapper>}
-          />
-          <Route
-            path="/tasks"
-            element={<AuthWrapper><Tasks /></AuthWrapper>}
-          />
-          <Route
-            path="/documents"
-            element={<AuthWrapper><MyDocuments /></AuthWrapper>}
-          />
-          <Route
-            path="/attendance"
-            element={<AuthWrapper><Attendance /></AuthWrapper>}
-          />
-          <Route
-            path="/leave-requests"
-            element={<AuthWrapper><LeaveRequests /></AuthWrapper>}
-          />
-          <Route
-            path="/feedback"
-            element={<AuthWrapper><Feedback /></AuthWrapper>}
-          />
-          <Route
-            path="/profile"
-            element={<AuthWrapper><Profile /></AuthWrapper>}
-          />
+          {/* ✅ Protected User Routes */}
+          <Route path="/dashboard" element={<AuthWrapper><Dashboard /></AuthWrapper>} />
+          <Route path="/tasks" element={<AuthWrapper><Tasks /></AuthWrapper>} />
+          <Route path="/documents" element={<AuthWrapper><MyDocuments /></AuthWrapper>} />
+          <Route path="/attendance" element={<AuthWrapper><Attendance /></AuthWrapper>} />
+          <Route path="/leave-requests" element={<AuthWrapper><LeaveRequests /></AuthWrapper>} />
+          <Route path="/feedback" element={<AuthWrapper><Feedback /></AuthWrapper>} />
+          <Route path="/profile" element={<AuthWrapper><Profile /></AuthWrapper>} />
 
-          {/* Protected Routes for Admin */}
-          <Route
-            path="/admin/dashboard"
-            element={<AuthWrapper><AdminDashboard /></AuthWrapper>}
-          />
-          <Route
-            path="/admin/tasks"
-            element={<AuthWrapper><AdminTasks /></AuthWrapper>}
-          />
-          <Route
-            path="/admin/documents"
-            element={<AuthWrapper><AdminMyDocuments /></AuthWrapper>}
-          />
-          <Route
-            path="/admin/attendance"
-            element={<AuthWrapper><AdminAttendance /></AuthWrapper>}
-          />
-          <Route
-            path="/admin/leave-requests"
-            element={<AuthWrapper><AdminLeaveRequests /></AuthWrapper>}
-          />
-          <Route
-            path="/admin/feedback"
-            element={<AuthWrapper><AdminFeedback /></AuthWrapper>}
-          />
+          {/* ✅ Protected Admin Routes */}
+          <Route path="/AdminDashboard" element={<AuthWrapper><AdminDashboard /></AuthWrapper>} />
+          <Route path="/AdminTasks" element={<AuthWrapper><AdminTasks /></AuthWrapper>} />
+          <Route path="/AdminMyDocuments" element={<AuthWrapper><AdminMyDocuments /></AuthWrapper>} />
+          <Route path="/AdminAttendance" element={<AuthWrapper><AdminAttendance /></AuthWrapper>} />
+          <Route path="/AdminLeaveRequests" element={<AuthWrapper><AdminLeaveRequests /></AuthWrapper>} />
+          <Route path="/AdminFeedback" element={<AuthWrapper><AdminFeedback /></AuthWrapper>} />
 
-          {/* Fallback 404 */}
+          {/* ✅ 404 Fallback */}
           <Route path="*" element={<NotFound />} />
+
         </Routes>
       </Router>
     </DarkModeProvider>
