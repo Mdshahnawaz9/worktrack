@@ -1,33 +1,48 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../components/Layout";
-import StatCard from "../components/StatCard";
+import React, { useEffect, useState } from 'react';
+import Layout from '../components/Layout';
+import StatCard from '../components/StatCard';
 
 const Dashboard = () => {
-  const [user, setUser] = useState(null);
-  const [stats, setStats] = useState([]);
+  const [user, setUser] = useState({});
+  const [tasks, setTasks] = useState([]);
+  const [attendance, setAttendance] = useState([]);
+  const [documents, setDocuments] = useState([]);
+  const [leaves, setLeaves] = useState([]);
+  const [feedbacks, setFeedbacks] = useState([]);
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    if (storedUser) {
-      setUser(storedUser);
+    const userData = JSON.parse(localStorage.getItem('loggedInUser')) || {};
+    setUser(userData);
 
-      // Example: Generate stats from user data
-      const generatedStats = [
-        { title: "Total Tasks", value: storedUser.tasks?.length || "0" },
-        { title: "Hours Tracked", value: storedUser.hoursTracked || "0h" },
-        { title: "Documents", value: storedUser.documents?.length || "0" },
-        { title: "Leave Requests", value: storedUser.leaves?.length || "0" },
-      ];
-      setStats(generatedStats);
-    }
+    const allTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    setTasks(allTasks.filter(task => task.assignedTo === userData.email));
+
+    const allAttendance = JSON.parse(localStorage.getItem('attendance')) || [];
+    setAttendance(allAttendance.filter(entry => entry.email === userData.email));
+
+    const allDocs = JSON.parse(localStorage.getItem('documents')) || [];
+    setDocuments(allDocs.filter(doc => doc.email === userData.email));
+
+    const allLeaves = JSON.parse(localStorage.getItem('leaveRequests')) || [];
+    setLeaves(allLeaves.filter(leave => leave.email === userData.email));
+
+    const allFeedbacks = JSON.parse(localStorage.getItem('feedbacks')) || [];
+    setFeedbacks(allFeedbacks.filter(fb => fb.email === userData.email));
   }, []);
 
   return (
     <Layout>
-      <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat, index) => (
-          <StatCard key={index} title={stat.title} value={stat.value} />
-        ))}
+      <div className="p-4">
+        <h1 className="text-2xl font-bold mb-4">
+          Welcome, {user.name || 'Employee'}!
+        </h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <StatCard title="My Tasks" value={tasks.length} />
+          <StatCard title="Attendance Records" value={attendance.length} />
+          <StatCard title="My Documents" value={documents.length} />
+          <StatCard title="Leave Requests" value={leaves.length} />
+          <StatCard title="My Feedback" value={feedbacks.length} />
+        </div>
       </div>
     </Layout>
   );
