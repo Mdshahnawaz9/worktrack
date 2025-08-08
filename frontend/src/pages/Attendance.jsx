@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
-import { StatCard } from "../components/StatCard";
+import StatCard from "../components/StatCard";
 
 const Attendance = () => {
   const [status, setStatus] = useState("Not Checked In");
