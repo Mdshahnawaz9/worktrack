@@ -6,12 +6,13 @@ const Sidebar = () => {
   const location = useLocation();
 
   const navItems = [
-    { name: "Dashboard", path: "/dashboard" },
-    { name: "Attendance", path: "/attendance" },
-    { name: "Tasks", path: "/tasks" },
-    { name: "Documents", path: "/documents" },
-    { name: "Leave", path: "/leave" },
-    { name: "Feedback", path: "/feedback" },
+    { name: "Dashboard", path: "/Dashboard" },
+    { name: "Attendance", path: "/Attendance" },
+    { name: "Tasks", path: "/Tasks" },
+    { name: "MyDocuments", path: "/MyDocuments" },
+    { name: "LeaveRequests", path: "/LeaveRequest" },
+    { name: "Feedback", path: "/Feedback" },
+    { name: "Profile", path: "/Profile" },
   ];
 
   return (
