@@ -9,8 +9,8 @@ const Sidebar = () => {
     { name: "Dashboard", path: "/Dashboard" },
     { name: "Attendance", path: "/Attendance" },
     { name: "Tasks", path: "/Tasks" },
-    { name: "MyDocuments", path: "/MyDocuments" },
-    { name: "LeaveRequests", path: "/LeaveRequest" },
+    { name: "My Documents", path: "/MyDocuments" },
+    { name: "Leave Requests", path: "/LeaveRequests" },
     { name: "Feedback", path: "/Feedback" },
     { name: "Profile", path: "/Profile" },
   ];
@@ -23,9 +23,9 @@ const Sidebar = () => {
           <li key={item.name}>
             <Link
               to={item.path}
-              className={`block px-4 py-2 rounded ${
+              className={`block px-4 py-2 rounded transition ${
                 location.pathname === item.path
-                  ? "bg-blue-500 text-white"
+                  ? "bg-blue-600 text-white"
                   : "hover:bg-gray-300 dark:hover:bg-gray-700"
               }`}
             >
