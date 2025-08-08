@@ -1,45 +1,89 @@
-import { useEffect, useState } from "react";
+// src/pages/AdminAttendance.jsx
+
+import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
+import { StatCard } from "../components/StatCard";
 
 const AdminAttendance = () => {
-  const [attendanceRecords, setAttendanceRecords] = useState([]);
+  const [attendanceData, setAttendanceData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const storedAttendance = JSON.parse(localStorage.getItem("attendance")) || [];
-    setAttendanceRecords(storedAttendance);
+    const allAttendance = JSON.parse(localStorage.getItem("attendance")) || [];
+    setAttendanceData(allAttendance);
+    setFilteredData(allAttendance);
   }, []);
+
+  const handleSearch = (e) => {
+    const value = e.target.value.toLowerCase();
+    setSearchTerm(value);
+
+    const filtered = attendanceData.filter((entry) =>
+      entry.email.toLowerCase().includes(value)
+    );
+    setFilteredData(filtered);
+  };
+
+  const totalUsers = [...new Set(attendanceData.map((entry) => entry.email))].length;
 
   return (
     <Layout>
-      <h1 className="text-2xl font-bold mb-4 text-center">All Users' Attendance</h1>
-      {attendanceRecords.length === 0 ? (
-        <p className="text-center text-gray-500">No attendance records found.</p>
-      ) : (
+      <div className="p-4">
+        <h1 className="text-2xl font-semibold mb-4">Admin - Attendance</h1>
+
+        {/* Stat Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <StatCard title="Total Entries" value={attendanceData.length} />
+          <StatCard title="Unique Users" value={totalUsers} />
+          <StatCard title="Check-Ins Recorded" value={attendanceData.filter((a) => a.checkIn).length} />
+        </div>
+
+        {/* Search Input */}
+        <div className="mb-6">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleSearch}
+            placeholder="Search by email..."
+            className="w-full sm:w-1/3 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-700"
+          />
+        </div>
+
+        {/* Table */}
         <div className="overflow-x-auto">
-          <table className="min-w-full border text-center">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="border px-4 py-2">User</th>
-                <th className="border px-4 py-2">Date</th>
-                <th className="border px-4 py-2">Check-in</th>
-                <th className="border px-4 py-2">Check-out</th>
-                <th className="border px-4 py-2">Total Hours</th>
+          <table className="min-w-full bg-white border border-gray-200 text-sm text-left dark:bg-gray-800 dark:text-white">
+            <thead>
+              <tr className="bg-gray-100 border-b dark:bg-gray-700">
+                <th className="p-3">Email</th>
+                <th className="p-3">Date</th>
+                <th className="p-3">Check In</th>
+                <th className="p-3">Check Out</th>
               </tr>
             </thead>
             <tbody>
-              {attendanceRecords.map((record, index) => (
-                <tr key={index}>
-                  <td className="border px-4 py-2">{record.username}</td>
-                  <td className="border px-4 py-2">{record.date}</td>
-                  <td className="border px-4 py-2">{record.checkIn}</td>
-                  <td className="border px-4 py-2">{record.checkOut}</td>
-                  <td className="border px-4 py-2">{record.totalHours} hrs</td>
+              {filteredData.length === 0 ? (
+                <tr>
+                  <td colSpan="4" className="p-4 text-center text-gray-500 dark:text-gray-400">
+                    No attendance records found.
+                  </td>
                 </tr>
-              ))}
+              ) : (
+                [...filteredData]
+                  .reverse()
+                  .map((entry, idx) => (
+                    <tr key={idx} className="border-t border-gray-200 dark:border-gray-700">
+                      <td className="p-3">{entry.email}</td>
+                      <td className="p-3">{entry.date}</td>
+                      <td className="p-3">{entry.checkIn || "–"}</td>
+                      <td className="p-3">{entry.checkOut || "–"}</td>
+                    </tr>
+                  ))
+              )}
             </tbody>
           </table>
         </div>
-      )}
+      </div>
     </Layout>
   );
 };
