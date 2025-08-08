@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Layout from "../../components/Layout";
-import StatCard from "../../components/StatCard";
+import Layout from "../components/Layout";
+import StatCard from "../components/StatCard";
 
 const AdminLeaveRequests = () => {
   const [leaveRequests, setLeaveRequests] = useState([]);
