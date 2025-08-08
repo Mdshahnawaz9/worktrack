@@ -33,13 +33,13 @@ function App() {
           <Route path="/signup" element={<Signup />} />
 
           {/* ✅ Protected User Routes */}
-          <Route path="/dashboard" element={<AuthWrapper><Dashboard /></AuthWrapper>} />
-          <Route path="/tasks" element={<AuthWrapper><Tasks /></AuthWrapper>} />
-          <Route path="/documents" element={<AuthWrapper><MyDocuments /></AuthWrapper>} />
-          <Route path="/attendance" element={<AuthWrapper><Attendance /></AuthWrapper>} />
-          <Route path="/leave-requests" element={<AuthWrapper><LeaveRequests /></AuthWrapper>} />
-          <Route path="/feedback" element={<AuthWrapper><Feedback /></AuthWrapper>} />
-          <Route path="/profile" element={<AuthWrapper><Profile /></AuthWrapper>} />
+          <Route path="/Dashboard" element={<AuthWrapper><Dashboard /></AuthWrapper>} />
+          <Route path="/Tasks" element={<AuthWrapper><Tasks /></AuthWrapper>} />
+          <Route path="/MyDocuments" element={<AuthWrapper><MyDocuments /></AuthWrapper>} />
+          <Route path="/Attendance" element={<AuthWrapper><Attendance /></AuthWrapper>} />
+          <Route path="/LeaveRequests" element={<AuthWrapper><LeaveRequests /></AuthWrapper>} />
+          <Route path="/Feedback" element={<AuthWrapper><Feedback /></AuthWrapper>} />
+          <Route path="/Profile" element={<AuthWrapper><Profile /></AuthWrapper>} />
 
           {/* ✅ Protected Admin Routes */}
           <Route path="/AdminDashboard" element={<AuthWrapper><AdminDashboard /></AuthWrapper>} />
