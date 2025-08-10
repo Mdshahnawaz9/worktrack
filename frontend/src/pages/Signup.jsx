@@ -10,9 +10,9 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Save credentials in localStorage
+    // Save credentials
     localStorage.setItem("user", JSON.stringify(form));
-    // Redirect to login page instead of dashboard
+    // Redirect to login page
     navigate("/login");
   };
 
@@ -31,7 +31,7 @@ const Signup = () => {
           placeholder="Username"
           onChange={handleChange}
           required
-          className="w-full mb-3 p-2 border rounded"
+          className="w-full mb-3 p-2 border rounded bg-gray-50 dark:bg-gray-700 dark:text-white"
         />
         <input
           type="password"
@@ -39,7 +39,7 @@ const Signup = () => {
           placeholder="Password"
           onChange={handleChange}
           required
-          className="w-full mb-3 p-2 border rounded"
+          className="w-full mb-3 p-2 border rounded bg-gray-50 dark:bg-gray-700 dark:text-white"
         />
         <button
           type="submit"
