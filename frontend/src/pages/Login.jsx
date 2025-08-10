@@ -4,22 +4,35 @@ import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({ username: "", password: "" });
+  const [error, setError] = useState("");
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    localStorage.setItem("user", JSON.stringify(form));
+    setError("");
 
-    // Admin email check
-    if (form.email === "admin@worktrackpro.com") {
+    // Admin login check
+    if (form.username === "admin" && form.password === "admin123") {
+      localStorage.setItem("user", JSON.stringify(form));
       localStorage.setItem("role", "admin");
       navigate("/admindashboard");
-    } else {
+      return;
+    }
+
+    // Normal user login check from localStorage
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (
+      storedUser &&
+      storedUser.username === form.username &&
+      storedUser.password === form.password
+    ) {
       localStorage.setItem("role", "user");
       navigate("/dashboard");
+    } else {
+      setError("Invalid username or password");
     }
   };
 
@@ -33,9 +46,9 @@ const Login = () => {
           Login
         </h2>
         <input
-          type="email"
-          name="email"
-          placeholder="Email"
+          type="text"
+          name="username"
+          placeholder="Username"
           onChange={handleChange}
           required
           className="w-full mb-3 p-2 border rounded"
@@ -48,6 +61,9 @@ const Login = () => {
           required
           className="w-full mb-3 p-2 border rounded"
         />
+        {error && (
+          <p className="text-red-500 text-sm mb-3 text-center">{error}</p>
+        )}
         <button
           type="submit"
           className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
