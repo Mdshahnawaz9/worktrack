@@ -11,24 +11,13 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setError("");
-
-    // Admin login
-    if (form.username === "admin" && form.password === "admin123") {
-      localStorage.setItem("user", JSON.stringify(form));
-      localStorage.setItem("role", "admin");
-      navigate("/admindashboard");
-      return;
-    }
-
-    // User login
-    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const savedUser = JSON.parse(localStorage.getItem("user"));
     if (
-      storedUser &&
-      storedUser.username === form.username &&
-      storedUser.password === form.password
+      savedUser &&
+      form.username === savedUser.username &&
+      form.password === savedUser.password
     ) {
-      localStorage.setItem("role", "user");
+      localStorage.setItem("isLoggedIn", "true");
       navigate("/dashboard");
     } else {
       setError("Invalid username or password");
@@ -44,13 +33,14 @@ const Login = () => {
         <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
           Login
         </h2>
+        {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
         <input
           type="text"
           name="username"
           placeholder="Username"
           onChange={handleChange}
           required
-          className="w-full mb-3 p-2 border rounded"
+          className="w-full mb-3 p-2 border rounded bg-gray-50 dark:bg-gray-700 dark:text-white"
         />
         <input
           type="password"
@@ -58,11 +48,8 @@ const Login = () => {
           placeholder="Password"
           onChange={handleChange}
           required
-          className="w-full mb-3 p-2 border rounded"
+          className="w-full mb-3 p-2 border rounded bg-gray-50 dark:bg-gray-700 dark:text-white"
         />
-        {error && (
-          <p className="text-red-500 text-sm mb-3 text-center">{error}</p>
-        )}
         <button
           type="submit"
           className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
