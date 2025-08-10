@@ -1,4 +1,3 @@
-// src/pages/Signup.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -11,18 +10,10 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Save user in localStorage
+    // Save credentials in localStorage
     localStorage.setItem("user", JSON.stringify(form));
-
-    // Default role: user (unless admin username)
-    if (form.username.toLowerCase() === "admin") {
-      localStorage.setItem("role", "admin");
-      navigate("/admindashboard");
-    } else {
-      localStorage.setItem("role", "user");
-      navigate("/dashboard");
-    }
+    // Redirect to login page instead of dashboard
+    navigate("/login");
   };
 
   return (
@@ -34,8 +25,6 @@ const Signup = () => {
         <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
           Sign Up
         </h2>
-
-        {/* Username Field */}
         <input
           type="text"
           name="username"
@@ -44,8 +33,6 @@ const Signup = () => {
           required
           className="w-full mb-3 p-2 border rounded"
         />
-
-        {/* Password Field */}
         <input
           type="password"
           name="password"
@@ -54,14 +41,12 @@ const Signup = () => {
           required
           className="w-full mb-3 p-2 border rounded"
         />
-
         <button
           type="submit"
           className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600"
         >
           Sign Up
         </button>
-
         <p
           className="text-sm text-center mt-3 text-blue-500 cursor-pointer"
           onClick={() => navigate("/login")}
