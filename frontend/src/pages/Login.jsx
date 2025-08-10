@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -14,7 +13,7 @@ const Login = () => {
     e.preventDefault();
     setError("");
 
-    // Admin login check
+    // Admin login
     if (form.username === "admin" && form.password === "admin123") {
       localStorage.setItem("user", JSON.stringify(form));
       localStorage.setItem("role", "admin");
@@ -22,7 +21,7 @@ const Login = () => {
       return;
     }
 
-    // Normal user login check from localStorage
+    // User login
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (
       storedUser &&
