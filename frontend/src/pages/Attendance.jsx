@@ -1,29 +1,42 @@
-// src/pages/Attendance.jsx
 import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 
 const Attendance = () => {
   const [user, setUser] = useState(null);
   const [todayRecord, setTodayRecord] = useState(null);
+  const [loading, setLoading] = useState(true); // Added to prevent premature alert
 
   useEffect(() => {
-    // Get current logged-in user (username-based)
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    if (!loggedInUser || !loggedInUser.username) {
+    try {
+      const storedUser = localStorage.getItem("loggedInUser");
+      if (storedUser) {
+        const loggedInUser = JSON.parse(storedUser);
+        if (loggedInUser?.username) {
+          setUser(loggedInUser);
+
+          const allAttendance =
+            JSON.parse(localStorage.getItem("attendance")) || [];
+          const today = new Date().toLocaleDateString("en-CA");
+          const record = allAttendance.find(
+            (r) =>
+              r.username === loggedInUser.username && r.date === today
+          );
+          setTodayRecord(record || null);
+          setLoading(false);
+          return;
+        }
+      }
+
+      // Only runs if no valid user is found at all
       alert("Please log in first!");
       window.location.href = "/login";
-      return;
+    } catch (err) {
+      console.error("Error reading localStorage:", err);
+      alert("Please log in first!");
+      window.location.href = "/login";
+    } finally {
+      setLoading(false);
     }
-    setUser(loggedInUser);
-
-    // Load today's attendance for this user
-    const allAttendance = JSON.parse(localStorage.getItem("attendance")) || [];
-    const today = new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD
-
-    const record = allAttendance.find(
-      (r) => r.username === loggedInUser.username && r.date === today
-    );
-    setTodayRecord(record || null);
   }, []);
 
   const updateLocalStorage = (record) => {
@@ -73,6 +86,8 @@ const Attendance = () => {
     record.checkOut = new Date().toLocaleTimeString();
     updateLocalStorage(record);
   };
+
+  if (loading) return null; // Prevent UI flash while checking login
 
   return (
     <Layout>
