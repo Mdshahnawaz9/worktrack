@@ -7,9 +7,9 @@ const Attendance = () => {
   const [todayRecord, setTodayRecord] = useState(null);
 
   useEffect(() => {
-    // Get current logged-in user
+    // Get current logged-in user (username-based)
     const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    if (!loggedInUser) {
+    if (!loggedInUser || !loggedInUser.username) {
       alert("Please log in first!");
       window.location.href = "/login";
       return;
@@ -19,8 +19,9 @@ const Attendance = () => {
     // Load today's attendance for this user
     const allAttendance = JSON.parse(localStorage.getItem("attendance")) || [];
     const today = new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD
+
     const record = allAttendance.find(
-      (r) => r.email === loggedInUser.email && r.date === today
+      (r) => r.username === loggedInUser.username && r.date === today
     );
     setTodayRecord(record || null);
   }, []);
@@ -28,7 +29,7 @@ const Attendance = () => {
   const updateLocalStorage = (record) => {
     const allAttendance = JSON.parse(localStorage.getItem("attendance")) || [];
     const index = allAttendance.findIndex(
-      (r) => r.email === record.email && r.date === record.date
+      (r) => r.username === record.username && r.date === record.date
     );
 
     if (index >= 0) {
@@ -48,7 +49,7 @@ const Attendance = () => {
     }
 
     const record = todayRecord || {
-      email: user.email,
+      username: user.username,
       date: new Date().toLocaleDateString("en-CA"),
       checkIn: "",
       checkOut: "",
