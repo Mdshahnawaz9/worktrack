@@ -1,23 +1,33 @@
+// src/pages/Signup.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDarkMode } from "../components/DarkModeProvider";
 
 const Signup = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ username: "", password: "" });
+  const { darkMode, toggleDarkMode } = useDarkMode();
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Save credentials
     localStorage.setItem("user", JSON.stringify(form));
-    // Redirect to login page
-    navigate("/login");
+    navigate("/login"); // Signup ke baad direct login page
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+      <div className="absolute top-4 right-4">
+        <button
+          onClick={toggleDarkMode}
+          className="p-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded"
+        >
+          {darkMode ? "🌙" : "☀️"}
+        </button>
+      </div>
+
       <form
         onSubmit={handleSubmit}
         className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md w-80"
@@ -27,11 +37,19 @@ const Signup = () => {
         </h2>
         <input
           type="text"
-          name="username"
-          placeholder="Username"
+          name="name"
+          placeholder="Full Name"
           onChange={handleChange}
           required
-          className="w-full mb-3 p-2 border rounded bg-gray-50 dark:bg-gray-700 dark:text-white"
+          className="w-full mb-3 p-2 border rounded"
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          onChange={handleChange}
+          required
+          className="w-full mb-3 p-2 border rounded"
         />
         <input
           type="password"
@@ -39,7 +57,7 @@ const Signup = () => {
           placeholder="Password"
           onChange={handleChange}
           required
-          className="w-full mb-3 p-2 border rounded bg-gray-50 dark:bg-gray-700 dark:text-white"
+          className="w-full mb-3 p-2 border rounded"
         />
         <button
           type="submit"
