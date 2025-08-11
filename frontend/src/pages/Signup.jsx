@@ -13,7 +13,6 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Save only username & password
     localStorage.setItem("user", JSON.stringify(form));
     navigate("/login");
   };
@@ -42,7 +41,11 @@ const Signup = () => {
           placeholder="Username"
           onChange={handleChange}
           required
-          className="w-full mb-3 p-2 border rounded transition-colors duration-300"
+          className="w-full mb-3 p-2 border rounded transition-colors duration-300
+                     text-gray-900 dark:text-white
+                     placeholder-gray-500 dark:placeholder-gray-300
+                     border-gray-300 dark:border-gray-600
+                     bg-white dark:bg-gray-700"
         />
         <input
           type="password"
@@ -50,7 +53,11 @@ const Signup = () => {
           placeholder="Password"
           onChange={handleChange}
           required
-          className="w-full mb-3 p-2 border rounded transition-colors duration-300"
+          className="w-full mb-3 p-2 border rounded transition-colors duration-300
+                     text-gray-900 dark:text-white
+                     placeholder-gray-500 dark:placeholder-gray-300
+                     border-gray-300 dark:border-gray-600
+                     bg-white dark:bg-gray-700"
         />
         <button
           type="submit"
