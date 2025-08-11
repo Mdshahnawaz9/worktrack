@@ -13,6 +13,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const storedUser = JSON.parse(localStorage.getItem("user"));
 
     if (
@@ -20,16 +21,10 @@ const Login = () => {
       storedUser.name === form.name &&
       storedUser.password === form.password
     ) {
-      // Save login status + full user data for Attendance.jsx
-      localStorage.setItem("loggedIn", "true");
-      localStorage.setItem(
-        "loggedInUser",
-        JSON.stringify({
-          username: storedUser.name,
-          password: storedUser.password, // optional
-        })
-      );
+      // Store full user object for later use
+      localStorage.setItem("loggedInUser", JSON.stringify(storedUser));
 
+      // Redirect to dashboard
       navigate("/dashboard");
     } else {
       alert("Invalid credentials");
@@ -58,7 +53,6 @@ const Login = () => {
           type="text"
           name="name"
           placeholder="Username"
-          value={form.name}
           onChange={handleChange}
           required
           className="w-full mb-3 p-2 border rounded transition-colors duration-300
@@ -71,7 +65,6 @@ const Login = () => {
           type="password"
           name="password"
           placeholder="Password"
-          value={form.password}
           onChange={handleChange}
           required
           className="w-full mb-3 p-2 border rounded transition-colors duration-300
