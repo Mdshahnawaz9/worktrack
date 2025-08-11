@@ -13,12 +13,21 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Sirf username & password save karenge
+
+    // Save user data
     localStorage.setItem("user", JSON.stringify({ 
       name: form.name, 
       password: form.password 
     }));
-    navigate("/login");
+
+    // Also mark as logged in immediately
+    localStorage.setItem("loggedInUser", JSON.stringify({ 
+      name: form.name, 
+      password: form.password 
+    }));
+
+    // Redirect to dashboard directly
+    navigate("/dashboard");
   };
 
   return (
@@ -43,25 +52,19 @@ const Signup = () => {
           type="text"
           name="name"
           placeholder="Username"
+          value={form.name}
           onChange={handleChange}
           required
-          className="w-full mb-3 p-2 border rounded transition-colors duration-300
-                     text-gray-900 dark:text-white
-                     placeholder-gray-500 dark:placeholder-gray-300
-                     border-gray-300 dark:border-gray-600
-                     bg-white dark:bg-gray-700"
+          className="w-full mb-3 p-2 border rounded text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-300 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
         />
         <input
           type="password"
           name="password"
           placeholder="Password"
+          value={form.password}
           onChange={handleChange}
           required
-          className="w-full mb-3 p-2 border rounded transition-colors duration-300
-                     text-gray-900 dark:text-white
-                     placeholder-gray-500 dark:placeholder-gray-300
-                     border-gray-300 dark:border-gray-600
-                     bg-white dark:bg-gray-700"
+          className="w-full mb-3 p-2 border rounded text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-300 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
         />
         <button
           type="submit"
