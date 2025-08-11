@@ -6,13 +6,14 @@ import { useDarkMode } from "../components/DarkModeProvider";
 const Signup = () => {
   const navigate = useNavigate();
   const { darkMode, toggleDarkMode } = useDarkMode();
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({ name: "", password: "" });
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Save only username & password
     localStorage.setItem("user", JSON.stringify(form));
     navigate("/login");
   };
@@ -38,15 +39,7 @@ const Signup = () => {
         <input
           type="text"
           name="name"
-          placeholder="Full Name"
-          onChange={handleChange}
-          required
-          className="w-full mb-3 p-2 border rounded transition-colors duration-300"
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
+          placeholder="Username"
           onChange={handleChange}
           required
           className="w-full mb-3 p-2 border rounded transition-colors duration-300"
