@@ -8,7 +8,6 @@ const Login = () => {
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [form, setForm] = useState({ name: "", password: "" });
 
-  // Agar already logged in ho, toh directly dashboard pe bhej do
   useEffect(() => {
     const loggedInUser = localStorage.getItem("loggedInUser");
     if (loggedInUser) {
@@ -16,8 +15,9 @@ const Login = () => {
     }
   }, [navigate]);
 
-  const handleChange = (e) =>
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,10 +29,7 @@ const Login = () => {
       storedUser.name === form.name &&
       storedUser.password === form.password
     ) {
-      // Save logged in user info
       localStorage.setItem("loggedInUser", JSON.stringify(storedUser));
-
-      // Redirect to dashboard
       navigate("/dashboard");
     } else {
       alert("Invalid username or password");
@@ -63,25 +60,19 @@ const Login = () => {
           type="text"
           name="name"
           placeholder="Username"
+          value={form.name}
           onChange={handleChange}
           required
-          className="w-full mb-3 p-2 border rounded transition-colors duration-300
-                     text-gray-900 dark:text-white
-                     placeholder-gray-500 dark:placeholder-gray-300
-                     border-gray-300 dark:border-gray-600
-                     bg-white dark:bg-gray-700"
+          className="w-full mb-3 p-2 border rounded text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-300 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
         />
         <input
           type="password"
           name="password"
           placeholder="Password"
+          value={form.password}
           onChange={handleChange}
           required
-          className="w-full mb-3 p-2 border rounded transition-colors duration-300
-                     text-gray-900 dark:text-white
-                     placeholder-gray-500 dark:placeholder-gray-300
-                     border-gray-300 dark:border-gray-600
-                     bg-white dark:bg-gray-700"
+          className="w-full mb-3 p-2 border rounded text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-300 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
         />
         <button
           type="submit"
