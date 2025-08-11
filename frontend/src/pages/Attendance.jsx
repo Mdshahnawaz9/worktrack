@@ -1,3 +1,4 @@
+// src/pages/Attendance.jsx
 import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import StatCard from "../components/StatCard";
@@ -13,7 +14,7 @@ const Attendance = () => {
   useEffect(() => {
     const allAttendance = JSON.parse(localStorage.getItem("attendance")) || [];
     const userAttendance = allAttendance.filter(
-      (entry) => entry.email === currentUser?.email
+      (entry) => entry.username === currentUser?.username
     );
 
     const today = new Date().toISOString().split("T")[0];
@@ -36,7 +37,7 @@ const Attendance = () => {
     const checkInTime = new Date().toLocaleTimeString();
 
     const newEntry = {
-      email: currentUser.email,
+      username: currentUser.username,
       date: today,
       checkIn: checkInTime,
       checkOut: "",
@@ -58,7 +59,7 @@ const Attendance = () => {
     const today = new Date().toISOString().split("T")[0];
 
     const updatedAttendance = allAttendance.map((entry) => {
-      if (entry.email === currentUser.email && entry.date === today) {
+      if (entry.username === currentUser.username && entry.date === today) {
         return { ...entry, checkOut: new Date().toLocaleTimeString() };
       }
       return entry;
@@ -67,12 +68,12 @@ const Attendance = () => {
     localStorage.setItem("attendance", JSON.stringify(updatedAttendance));
     setCheckedOut(true);
     setStatus("Checked Out");
-    setAttendance(updatedAttendance.filter((e) => e.email === currentUser.email));
+    setAttendance(updatedAttendance.filter((e) => e.username === currentUser.username));
   };
 
   return (
     <Layout>
-      <div className="p-4">
+      <div className="p-4 transition-colors duration-300">
         <h1 className="text-2xl font-semibold mb-4">Attendance</h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
@@ -84,14 +85,22 @@ const Attendance = () => {
         <div className="flex flex-wrap gap-4 mb-6">
           <button
             onClick={handleCheckIn}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded"
+            className={`px-6 py-2 rounded text-white transition-colors duration-300 ${
+              checkedIn
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
             disabled={checkedIn}
           >
             Check In
           </button>
           <button
             onClick={handleCheckOut}
-            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded"
+            className={`px-6 py-2 rounded text-white transition-colors duration-300 ${
+              !checkedIn || checkedOut
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-green-600 hover:bg-green-700"
+            }`}
             disabled={!checkedIn || checkedOut}
           >
             Check Out
@@ -99,27 +108,34 @@ const Attendance = () => {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-200 text-sm text-left">
+          <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm text-left transition-colors duration-300">
             <thead>
-              <tr className="bg-gray-100 border-b">
-                <th className="p-3">Date</th>
-                <th className="p-3">Check In</th>
-                <th className="p-3">Check Out</th>
+              <tr className="bg-gray-100 dark:bg-gray-700 border-b dark:border-gray-600">
+                <th className="p-3 text-gray-900 dark:text-gray-200">Date</th>
+                <th className="p-3 text-gray-900 dark:text-gray-200">Check In</th>
+                <th className="p-3 text-gray-900 dark:text-gray-200">Check Out</th>
               </tr>
             </thead>
             <tbody>
               {attendance.length === 0 ? (
                 <tr>
-                  <td colSpan="3" className="p-4 text-center text-gray-500">
+                  <td
+                    colSpan="3"
+                    className="p-4 text-center text-gray-500 dark:text-gray-400"
+                  >
                     No attendance records yet.
                   </td>
                 </tr>
               ) : (
                 [...attendance].reverse().map((entry, idx) => (
-                  <tr key={idx} className="border-t">
-                    <td className="p-3">{entry.date}</td>
-                    <td className="p-3">{entry.checkIn || "–"}</td>
-                    <td className="p-3">{entry.checkOut || "–"}</td>
+                  <tr key={idx} className="border-t dark:border-gray-700">
+                    <td className="p-3 text-gray-900 dark:text-gray-200">{entry.date}</td>
+                    <td className="p-3 text-gray-900 dark:text-gray-200">
+                      {entry.checkIn || "–"}
+                    </td>
+                    <td className="p-3 text-gray-900 dark:text-gray-200">
+                      {entry.checkOut || "–"}
+                    </td>
                   </tr>
                 ))
               )}
