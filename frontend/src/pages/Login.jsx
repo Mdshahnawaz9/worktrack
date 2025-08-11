@@ -1,5 +1,5 @@
 // src/pages/Login.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDarkMode } from "../components/DarkModeProvider";
 
@@ -7,6 +7,14 @@ const Login = () => {
   const navigate = useNavigate();
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [form, setForm] = useState({ name: "", password: "" });
+
+  // Agar already logged in ho, toh directly dashboard pe bhej do
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem("loggedInUser");
+    if (loggedInUser) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -21,18 +29,19 @@ const Login = () => {
       storedUser.name === form.name &&
       storedUser.password === form.password
     ) {
-      // Store full user object for later use
+      // Save logged in user info
       localStorage.setItem("loggedInUser", JSON.stringify(storedUser));
 
       // Redirect to dashboard
       navigate("/dashboard");
     } else {
-      alert("Invalid credentials");
+      alert("Invalid username or password");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
+      {/* Dark Mode Toggle */}
       <div className="absolute top-4 right-4">
         <button
           onClick={toggleDarkMode}
@@ -42,6 +51,7 @@ const Login = () => {
         </button>
       </div>
 
+      {/* Login Form */}
       <form
         onSubmit={handleSubmit}
         className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md w-80 transition-colors duration-300"
