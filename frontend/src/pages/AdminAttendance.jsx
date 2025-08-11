@@ -1,152 +1,118 @@
-// src/pages/AdminAttendance.jsx
+// src/pages/Attendance.jsx
 import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
-import StatCard from "../components/StatCard";
 
-const AdminAttendance = () => {
-  const [attendanceData, setAttendanceData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterDate, setFilterDate] = useState("");
+const Attendance = () => {
+  const [user, setUser] = useState(null);
+  const [todayRecord, setTodayRecord] = useState(null);
 
   useEffect(() => {
+    // Get current logged-in user
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (!loggedInUser) {
+      alert("Please log in first!");
+      window.location.href = "/login";
+      return;
+    }
+    setUser(loggedInUser);
+
+    // Load today's attendance for this user
     const allAttendance = JSON.parse(localStorage.getItem("attendance")) || [];
-    setAttendanceData(allAttendance);
-    setFilteredData(allAttendance);
+    const today = new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD
+    const record = allAttendance.find(
+      (r) => r.email === loggedInUser.email && r.date === today
+    );
+    setTodayRecord(record || null);
   }, []);
 
-  // Search by email/username
-  const handleSearch = (e) => {
-    const value = e.target.value.toLowerCase();
-    setSearchTerm(value);
-    applyFilters(value, filterDate);
-  };
+  const updateLocalStorage = (record) => {
+    const allAttendance = JSON.parse(localStorage.getItem("attendance")) || [];
+    const index = allAttendance.findIndex(
+      (r) => r.email === record.email && r.date === record.date
+    );
 
-  // Filter by date
-  const handleDateFilter = (e) => {
-    const dateValue = e.target.value;
-    setFilterDate(dateValue);
-    applyFilters(searchTerm, dateValue);
-  };
-
-  const applyFilters = (searchValue, dateValue) => {
-    let filtered = [...attendanceData];
-    if (searchValue) {
-      filtered = filtered.filter((entry) =>
-        entry.email.toLowerCase().includes(searchValue)
-      );
+    if (index >= 0) {
+      allAttendance[index] = record;
+    } else {
+      allAttendance.push(record);
     }
-    if (dateValue) {
-      filtered = filtered.filter((entry) => entry.date === dateValue);
-    }
-    setFilteredData(filtered);
+
+    localStorage.setItem("attendance", JSON.stringify(allAttendance));
+    setTodayRecord(record);
   };
 
-  // Delete a single record
-  const handleDelete = (index) => {
-    if (window.confirm("Delete this record?")) {
-      const updated = [...attendanceData];
-      updated.splice(index, 1);
-      setAttendanceData(updated);
-      setFilteredData(updated);
-      localStorage.setItem("attendance", JSON.stringify(updated));
+  const handleCheckIn = () => {
+    if (todayRecord?.checkIn) {
+      alert("You have already checked in today.");
+      return;
     }
+
+    const record = todayRecord || {
+      email: user.email,
+      date: new Date().toLocaleDateString("en-CA"),
+      checkIn: "",
+      checkOut: "",
+    };
+
+    record.checkIn = new Date().toLocaleTimeString();
+    updateLocalStorage(record);
   };
 
-  // Clear all records
-  const handleClearAll = () => {
-    if (window.confirm("Are you sure you want to delete ALL attendance records?")) {
-      setAttendanceData([]);
-      setFilteredData([]);
-      localStorage.setItem("attendance", JSON.stringify([]));
+  const handleCheckOut = () => {
+    if (!todayRecord?.checkIn) {
+      alert("You need to check in first.");
+      return;
     }
-  };
+    if (todayRecord?.checkOut) {
+      alert("You have already checked out today.");
+      return;
+    }
 
-  const totalUsers = [...new Set(attendanceData.map((entry) => entry.email))].length;
+    const record = { ...todayRecord };
+    record.checkOut = new Date().toLocaleTimeString();
+    updateLocalStorage(record);
+  };
 
   return (
     <Layout>
       <div className="p-4">
-        <h1 className="text-2xl font-semibold mb-4">Admin - Attendance</h1>
+        <h1 className="text-2xl font-semibold mb-6">Attendance</h1>
 
-        {/* Stat Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-          <StatCard title="Total Entries" value={attendanceData.length} />
-          <StatCard title="Unique Users" value={totalUsers} />
-          <StatCard
-            title="Check-Ins Recorded"
-            value={attendanceData.filter((a) => a.checkIn).length}
-          />
-        </div>
+        <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 transition-colors">
+          <p className="text-lg dark:text-gray-200">
+            Welcome, <span className="font-semibold">{user?.username}</span>
+          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Date: {new Date().toLocaleDateString()}
+          </p>
 
-        {/* Search + Date Filter + Buttons */}
-        <div className="flex flex-wrap gap-4 mb-6">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={handleSearch}
-            placeholder="Search by email..."
-            className="px-4 py-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-700"
-          />
-          <input
-            type="date"
-            value={filterDate}
-            onChange={handleDateFilter}
-            className="px-4 py-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-700"
-          />
-          <button
-            onClick={handleClearAll}
-            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-          >
-            Clear All
-          </button>
-        </div>
+          <div className="mt-6 flex gap-4">
+            <button
+              onClick={handleCheckIn}
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded transition"
+            >
+              Check In
+            </button>
+            <button
+              onClick={handleCheckOut}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition"
+            >
+              Check Out
+            </button>
+          </div>
 
-        {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="min-w-full border border-gray-200 text-sm text-left dark:bg-gray-800 dark:text-white">
-            <thead>
-              <tr className="bg-gray-100 border-b dark:bg-gray-700">
-                <th className="p-3">Email</th>
-                <th className="p-3">Date</th>
-                <th className="p-3">Check In</th>
-                <th className="p-3">Check Out</th>
-                <th className="p-3">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredData.length === 0 ? (
-                <tr>
-                  <td colSpan="5" className="p-4 text-center text-gray-500 dark:text-gray-400">
-                    No attendance records found.
-                  </td>
-                </tr>
-              ) : (
-                [...filteredData]
-                  .reverse()
-                  .map((entry, idx) => (
-                    <tr key={idx} className="border-t border-gray-200 dark:border-gray-700">
-                      <td className="p-3">{entry.email}</td>
-                      <td className="p-3">{entry.date}</td>
-                      <td className="p-3">{entry.checkIn || "–"}</td>
-                      <td className="p-3">{entry.checkOut || "–"}</td>
-                      <td className="p-3">
-                        <button
-                          onClick={() => handleDelete(attendanceData.indexOf(entry))}
-                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-              )}
-            </tbody>
-          </table>
+          <div className="mt-6">
+            <p className="dark:text-gray-200">
+              <strong>Check In:</strong> {todayRecord?.checkIn || "—"}
+            </p>
+            <p className="dark:text-gray-200">
+              <strong>Check Out:</strong> {todayRecord?.checkOut || "—"}
+            </p>
+          </div>
         </div>
       </div>
     </Layout>
   );
 };
 
-export default AdminAttendance;
+export default Attendance;
