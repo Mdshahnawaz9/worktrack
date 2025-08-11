@@ -6,7 +6,7 @@ import { useDarkMode } from "../components/DarkModeProvider";
 const Login = () => {
   const navigate = useNavigate();
   const { darkMode, toggleDarkMode } = useDarkMode();
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({ username: "", password: "" });
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -14,20 +14,22 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const storedUser = JSON.parse(localStorage.getItem("user"));
+
     if (
       storedUser &&
-      storedUser.email === form.email &&
+      storedUser.username === form.username &&
       storedUser.password === form.password
     ) {
       localStorage.setItem("loggedIn", "true");
       navigate("/dashboard");
     } else {
-      alert("Invalid credentials");
+      alert("Invalid username or password");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
+      {/* Dark Mode Toggle */}
       <div className="absolute top-4 right-4">
         <button
           onClick={toggleDarkMode}
@@ -37,6 +39,7 @@ const Login = () => {
         </button>
       </div>
 
+      {/* Login Form */}
       <form
         onSubmit={handleSubmit}
         className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md w-80 transition-colors duration-300"
@@ -44,10 +47,11 @@ const Login = () => {
         <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white transition-colors duration-300">
           Login
         </h2>
+
         <input
-          type="email"
-          name="email"
-          placeholder="Email"
+          type="text"
+          name="username"
+          placeholder="Username"
           onChange={handleChange}
           required
           className="w-full mb-3 p-2 border rounded transition-colors duration-300"
@@ -60,12 +64,14 @@ const Login = () => {
           required
           className="w-full mb-3 p-2 border rounded transition-colors duration-300"
         />
+
         <button
           type="submit"
           className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition-colors duration-300"
         >
           Login
         </button>
+
         <p
           className="text-sm text-center mt-3 text-blue-500 cursor-pointer"
           onClick={() => navigate("/signup")}
