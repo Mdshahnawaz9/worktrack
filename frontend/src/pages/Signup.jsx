@@ -13,7 +13,11 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    localStorage.setItem("user", JSON.stringify(form));
+    // Sirf username & password save karenge
+    localStorage.setItem("user", JSON.stringify({ 
+      name: form.name, 
+      password: form.password 
+    }));
     navigate("/login");
   };
 
