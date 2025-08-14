@@ -15,8 +15,15 @@ export default function Login() {
     );
 
     if (user) {
+      // Store logged in user
       localStorage.setItem("loggedInUser", JSON.stringify(user));
-      navigate("/dashboard");
+
+      // Redirect based on role
+      if (user.role === "admin") {
+        navigate("/admindashboard");
+      } else {
+        navigate("/dashboard");
+      }
     } else {
       alert("Invalid email or password");
     }
