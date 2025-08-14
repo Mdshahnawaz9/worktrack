@@ -1,42 +1,51 @@
-// src/components/Navbar.jsx
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useDarkMode } from "./DarkModeProvider";
 
-const Navbar = ({ onLogout, darkMode, toggleDarkMode }) => {
-  const user = JSON.parse(localStorage.getItem("currentUser"));
+export default function Navbar({ onToggleSidebar }) {
+  const navigate = useNavigate();
+  const { dark, toggle } = useDarkMode();
+  const user = JSON.parse(localStorage.getItem("loggedInUser"));
+
+  const handleLogout = () => {
+    localStorage.removeItem("loggedInUser");
+    navigate("/login");
+  };
 
   return (
-    <nav className="flex justify-between items-center p-4 bg-gray-200 dark:bg-gray-900 dark:text-white shadow">
-      <h1 className="text-xl font-bold">WorkTrackPro</h1>
+    <nav className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 bg-gray-100 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      <div className="flex items-center gap-3">
+        <button
+          onClick={onToggleSidebar}
+          className="sm:hidden inline-flex items-center justify-center w-9 h-9 rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+          aria-label="Toggle sidebar"
+        >
+          ☰
+        </button>
+        <span className="font-bold text-lg text-gray-900 dark:text-white">WorkTrackPro</span>
+      </div>
 
-      <div className="flex items-center gap-4">
-        {/* Show username if available */}
-        {user?.name && (
-          <span className="text-sm hidden sm:inline">
-            👤 {user.name} ({user.role})
+      <div className="flex items-center gap-2">
+        <button
+          onClick={toggle}
+          className="px-3 py-1 rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm"
+        >
+          {dark ? "☀️ Light" : "🌙 Dark"}
+        </button>
+
+        {user && (
+          <span className="hidden sm:inline text-sm text-gray-700 dark:text-gray-300 mr-2">
+            {user.name} {user.role === "admin" ? "(Admin)" : ""}
           </span>
         )}
 
-        {/* Toggle dark mode button */}
         <button
-          onClick={toggleDarkMode}
-          className="bg-gray-300 dark:bg-gray-700 px-3 py-1 rounded hover:opacity-80"
-        >
-          {darkMode ? "☀️ Light" : "🌙 Dark"}
-        </button>
-
-        {/* Logout button */}
-        <button
-          onClick={() => {
-            localStorage.removeItem("currentUser");
-            if (onLogout) onLogout();
-          }}
-          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+          onClick={handleLogout}
+          className="px-3 py-1 rounded-md bg-red-500 hover:bg-red-600 text-white text-sm"
         >
           Logout
         </button>
       </div>
     </nav>
   );
-};
-
-export default Navbar;
+}
