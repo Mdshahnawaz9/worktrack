@@ -1,65 +1,54 @@
 import React, { useEffect, useState } from "react";
-import Layout from "../components/Layout";
-import StatCard from "../components/StatCard";
 import { useNavigate } from "react-router-dom";
 
-const Dashboard = () => {
+export default function Dashboard() {
   const navigate = useNavigate();
-  const [user, setUser] = useState({});
-  const [tasks, setTasks] = useState([]);
-  const [attendance, setAttendance] = useState([]);
-  const [documents, setDocuments] = useState([]);
-  const [leaves, setLeaves] = useState([]);
-  const [feedbacks, setFeedbacks] = useState([]);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("loggedInUser"));
-    if (!userData) {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (!currentUser) {
       navigate("/login");
-      return;
+    } else {
+      setUser(currentUser);
     }
-    setUser(userData);
-
-    const allTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    setTasks(allTasks.filter((task) => task.assignedTo === userData.email));
-
-    const allAttendance = JSON.parse(localStorage.getItem("attendance")) || [];
-    setAttendance(allAttendance.filter((entry) => entry.email === userData.email));
-
-    const allDocs = JSON.parse(localStorage.getItem("documents")) || [];
-    setDocuments(allDocs.filter((doc) => doc.email === userData.email));
-
-    const allLeaves = JSON.parse(localStorage.getItem("leaveRequests")) || [];
-    setLeaves(allLeaves.filter((leave) => leave.email === userData.email));
-
-    const allFeedbacks = JSON.parse(localStorage.getItem("feedbacks")) || [];
-    setFeedbacks(allFeedbacks.filter((fb) => fb.email === userData.email));
   }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("loggedInUser");
-    navigate("/login");
-  };
+  if (!user) return null;
 
   return (
-    <Layout>
-      <div className="p-4">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Welcome, {user.name || "Employee"}!</h1>
-          <button onClick={handleLogout} className="bg-red-500 text-white px-3 py-1 rounded">
-            Logout
-          </button>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <header className="flex justify-between items-center bg-white shadow p-4 rounded-lg">
+        <h1 className="text-xl font-bold">WorkTrackPro Dashboard</h1>
+        <button
+          className="bg-red-500 text-white px-4 py-2 rounded"
+          onClick={() => {
+            localStorage.removeItem("currentUser");
+            navigate("/login");
+          }}
+        >
+          Logout
+        </button>
+      </header>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h2 className="font-semibold text-lg">Attendance</h2>
+          <p>Track your daily check-ins and check-outs</p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          <StatCard title="My Tasks" value={tasks.length} />
-          <StatCard title="Attendance Records" value={attendance.length} />
-          <StatCard title="My Documents" value={documents.length} />
-          <StatCard title="Leave Requests" value={leaves.length} />
-          <StatCard title="My Feedback" value={feedbacks.length} />
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h2 className="font-semibold text-lg">Leave Requests</h2>
+          <p>Apply for leaves and view status</p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h2 className="font-semibold text-lg">Tasks</h2>
+          <p>View and manage your assigned tasks</p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h2 className="font-semibold text-lg">Feedback</h2>
+          <p>Submit feedback to admin</p>
         </div>
       </div>
-    </Layout>
+    </div>
   );
-};
-
-export default Dashboard;
+}
