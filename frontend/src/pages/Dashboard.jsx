@@ -11,6 +11,15 @@ export default function Dashboard() {
   const [leaveCount, setLeaveCount] = useState(0);
   const [feedbackCount, setFeedbackCount] = useState(0);
 
+  // Safe JSON parse function
+  const safeParse = (key) => {
+    try {
+      return JSON.parse(localStorage.getItem(key)) || [];
+    } catch {
+      return [];
+    }
+  };
+
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
     if (!loggedInUser) {
@@ -19,25 +28,21 @@ export default function Dashboard() {
     }
     setUserName(loggedInUser.name || "User");
 
-    // Attendance Data
-    const attendanceData = JSON.parse(localStorage.getItem("attendance")) || [];
-    const userAttendance = attendanceData.filter(a => a.email === loggedInUser.email);
-    setAttendanceCount(userAttendance.length);
+    // Attendance
+    const attendanceData = safeParse("attendance");
+    setAttendanceCount(attendanceData.filter(a => a.email === loggedInUser.email).length);
 
-    // Task Data
-    const taskData = JSON.parse(localStorage.getItem("tasks")) || [];
-    const userTasks = taskData.filter(t => t.assignedTo === loggedInUser.email);
-    setTaskCount(userTasks.length);
+    // Tasks
+    const taskData = safeParse("tasks");
+    setTaskCount(taskData.filter(t => t.assignedTo === loggedInUser.email).length);
 
     // Leave Requests
-    const leaveData = JSON.parse(localStorage.getItem("leaveRequests")) || [];
-    const userLeaves = leaveData.filter(l => l.email === loggedInUser.email);
-    setLeaveCount(userLeaves.length);
+    const leaveData = safeParse("leaveRequests");
+    setLeaveCount(leaveData.filter(l => l.email === loggedInUser.email).length);
 
     // Feedback
-    const feedbackData = JSON.parse(localStorage.getItem("feedbacks")) || [];
-    const userFeedbacks = feedbackData.filter(f => f.email === loggedInUser.email);
-    setFeedbackCount(userFeedbacks.length);
+    const feedbackData = safeParse("feedbacks");
+    setFeedbackCount(feedbackData.filter(f => f.email === loggedInUser.email).length);
   }, [navigate]);
 
   return (
@@ -45,26 +50,10 @@ export default function Dashboard() {
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-6">Welcome, {userName} 👋</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard
-            title="Attendance Records"
-            value={attendanceCount}
-            onClick={() => navigate("/attendance")}
-          />
-          <StatCard
-            title="My Tasks"
-            value={taskCount}
-            onClick={() => navigate("/tasks")}
-          />
-          <StatCard
-            title="Leave Requests"
-            value={leaveCount}
-            onClick={() => navigate("/leave")}
-          />
-          <StatCard
-            title="Feedback Given"
-            value={feedbackCount}
-            onClick={() => navigate("/feedback")}
-          />
+          <StatCard title="Attendance Records" value={attendanceCount} onClick={() => navigate("/attendance")} />
+          <StatCard title="My Tasks" value={taskCount} onClick={() => navigate("/tasks")} />
+          <StatCard title="Leave Requests" value={leaveCount} onClick={() => navigate("/leave")} />
+          <StatCard title="Feedback Given" value={feedbackCount} onClick={() => navigate("/feedback")} />
         </div>
       </div>
     </Layout>
