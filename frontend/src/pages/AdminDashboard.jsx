@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import Layout from '../components/Layout';
-import StatCard from '../components/StatCard';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Layout from "../components/Layout";
+import StatCard from "../components/StatCard";
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalEmployees: 0,
     totalTasks: 0,
@@ -11,28 +13,72 @@ const AdminDashboard = () => {
   });
 
   useEffect(() => {
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    const projects = JSON.parse(localStorage.getItem('projects')) || [];
-    const leaves = JSON.parse(localStorage.getItem('leaves')) || [];
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    const projects = JSON.parse(localStorage.getItem("projects")) || [];
+    const leaves = JSON.parse(localStorage.getItem("leaves")) || [];
 
     setStats({
       totalEmployees: users.length,
       totalTasks: tasks.length,
       totalProjects: projects.length,
-      pendingLeaves: leaves.filter((l) => l.status === 'Pending').length,
+      pendingLeaves: leaves.filter((l) => l.status === "Pending").length,
     });
   }, []);
+
+  const handleCardClick = (type) => {
+    switch (type) {
+      case "employees":
+        navigate("/admin/employees");
+        break;
+      case "tasks":
+        navigate("/admin/tasks");
+        break;
+      case "projects":
+        navigate("/admin/projects");
+        break;
+      case "leaves":
+        navigate("/admin/leave-requests");
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <Layout>
       <div className="p-4">
-        <h1 className="text-2xl font-semibold mb-4">Admin Dashboard</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard title="Total Employees" value={stats.totalEmployees} />
-          <StatCard title="Total Tasks" value={stats.totalTasks} />
-          <StatCard title="Total Projects" value={stats.totalProjects} />
-          <StatCard title="Pending Leaves" value={stats.pendingLeaves} />
+        {/* Heading */}
+        <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200">
+          Admin Dashboard
+        </h1>
+
+        {/* Stat Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StatCard
+            title="Total Employees"
+            value={stats.totalEmployees}
+            onClick={() => handleCardClick("employees")}
+            className="cursor-pointer hover:scale-105 transition-transform duration-300"
+          />
+          <StatCard
+            title="Total Tasks"
+            value={stats.totalTasks}
+            onClick={() => handleCardClick("tasks")}
+            className="cursor-pointer hover:scale-105 transition-transform duration-300"
+          />
+          <StatCard
+            title="Total Projects"
+            value={stats.totalProjects}
+            onClick={() => handleCardClick("projects")}
+            className="cursor-pointer hover:scale-105 transition-transform duration-300"
+          />
+          <StatCard
+            title="Pending Leaves"
+            value={stats.pendingLeaves}
+            onClick={() => handleCardClick("leaves")}
+            className="cursor-pointer hover:scale-105 transition-transform duration-300"
+          />
         </div>
       </div>
     </Layout>
