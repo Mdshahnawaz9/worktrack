@@ -1,81 +1,64 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-export default function Signup() {
+const Signup = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState({ email: '', username: '', password: '' });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSignup = (e) => {
     e.preventDefault();
+    let users = JSON.parse(localStorage.getItem('users')) || [];
 
-    let users = JSON.parse(localStorage.getItem("users")) || [];
-
-    if (users.find((u) => u.email === formData.email)) {
-      alert("User already exists. Please login.");
-      navigate("/login");
+    if (users.find(user => user.email === formData.email)) {
+      alert('Email already registered!');
       return;
     }
 
     users.push(formData);
-    localStorage.setItem("users", JSON.stringify(users));
-    alert("Account created successfully!");
-    navigate("/login");
+    localStorage.setItem('users', JSON.stringify(users));
+    alert('Signup successful! Please login.');
+    navigate('/login');
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-96">
-        <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            required
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email Address"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            required
-          />
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-          >
-            Sign Up
-          </button>
-        </form>
-        <p className="mt-4 text-center">
-          Already have an account?{" "}
-          <Link to="/login" className="text-blue-500 hover:underline">
-            Login
-          </Link>
-        </p>
-      </div>
+    <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
+      <form onSubmit={handleSignup} className="bg-gray-800 p-6 rounded shadow-md w-80">
+        <h2 className="text-2xl mb-4">Sign Up</h2>
+        <input
+          type="email"
+          name="email"
+          placeholder="Email Address"
+          value={formData.email}
+          onChange={handleChange}
+          className="w-full p-2 mb-3 bg-gray-700 border border-gray-600 rounded text-white"
+          required
+        />
+        <input
+          type="text"
+          name="username"
+          placeholder="Username"
+          value={formData.username}
+          onChange={handleChange}
+          className="w-full p-2 mb-3 bg-gray-700 border border-gray-600 rounded text-white"
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+          className="w-full p-2 mb-3 bg-gray-700 border border-gray-600 rounded text-white"
+          required
+        />
+        <button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 p-2 rounded">Sign Up</button>
+      </form>
     </div>
   );
-}
+};
+
+export default Signup;
