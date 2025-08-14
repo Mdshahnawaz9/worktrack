@@ -5,6 +5,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -15,56 +16,53 @@ export default function Login() {
     );
 
     if (user) {
-      // Store logged in user
       localStorage.setItem("loggedInUser", JSON.stringify(user));
-
-      // Redirect based on role
-      if (user.role === "admin") {
-        navigate("/admindashboard");
-      } else {
-        navigate("/dashboard");
-      }
+      navigate(user.role === "admin" ? "/admin/dashboard" : "/dashboard");
     } else {
-      alert("Invalid email or password");
+      setError("Invalid email or password");
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
-      <form
-        onSubmit={handleLogin}
-        className="bg-gray-800 p-6 rounded-lg shadow-lg w-80"
-      >
-        <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
-        <input
-          type="email"
-          placeholder="Email Address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-2 mb-3 rounded bg-gray-700 border border-gray-600"
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 mb-3 rounded bg-gray-700 border border-gray-600"
-          required
-        />
-        <button
-          type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 p-2 rounded"
-        >
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900">
+      <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-4 text-center dark:text-white">
           Login
-        </button>
-        <p className="mt-4 text-center text-sm">
-          Don’t have an account?{" "}
-          <Link to="/signup" className="text-blue-400 hover:underline">
-            Sign Up
+        </h2>
+        {error && (
+          <p className="text-red-500 text-sm mb-2 text-center">{error}</p>
+        )}
+        <form onSubmit={handleLogin} className="space-y-4">
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button
+            type="submit"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded"
+          >
+            Login
+          </button>
+        </form>
+        <p className="mt-4 text-center dark:text-gray-300">
+          Don't have an account?{" "}
+          <Link to="/signup" className="text-blue-500 hover:underline">
+            Sign up
           </Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 }
