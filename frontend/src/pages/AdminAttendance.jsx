@@ -15,25 +15,13 @@ const AdminAttendance = () => {
     setFilteredData(allAttendance);
   }, []);
 
-  // Search by email/username
-  const handleSearch = (e) => {
-    const value = e.target.value.toLowerCase();
-    setSearchTerm(value);
-    applyFilters(value, filterDate);
-  };
-
-  // Filter by date
-  const handleDateFilter = (e) => {
-    const dateValue = e.target.value;
-    setFilterDate(dateValue);
-    applyFilters(searchTerm, dateValue);
-  };
-
   const applyFilters = (searchValue, dateValue) => {
     let filtered = [...attendanceData];
     if (searchValue) {
       filtered = filtered.filter((entry) =>
-        entry.email.toLowerCase().includes(searchValue)
+        (entry.email || entry.username || "")
+          .toLowerCase()
+          .includes(searchValue)
       );
     }
     if (dateValue) {
@@ -42,7 +30,18 @@ const AdminAttendance = () => {
     setFilteredData(filtered);
   };
 
-  // Delete a single record
+  const handleSearch = (e) => {
+    const value = e.target.value.toLowerCase();
+    setSearchTerm(value);
+    applyFilters(value, filterDate);
+  };
+
+  const handleDateFilter = (e) => {
+    const dateValue = e.target.value;
+    setFilterDate(dateValue);
+    applyFilters(searchTerm, dateValue);
+  };
+
   const handleDelete = (index) => {
     if (window.confirm("Delete this record?")) {
       const updated = [...attendanceData];
@@ -53,16 +52,21 @@ const AdminAttendance = () => {
     }
   };
 
-  // Clear all records
   const handleClearAll = () => {
-    if (window.confirm("Are you sure you want to delete ALL attendance records?")) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete ALL attendance records?"
+      )
+    ) {
       setAttendanceData([]);
       setFilteredData([]);
       localStorage.setItem("attendance", JSON.stringify([]));
     }
   };
 
-  const totalUsers = [...new Set(attendanceData.map((entry) => entry.email))].length;
+  const totalUsers = [
+    ...new Set(attendanceData.map((entry) => entry.email || entry.username)),
+  ].length;
 
   return (
     <Layout>
@@ -80,34 +84,34 @@ const AdminAttendance = () => {
         </div>
 
         {/* Search + Date Filter + Buttons */}
-        <div className="flex flex-wrap gap-4 mb-6">
+        <div className="flex flex-wrap gap-4 mb-6 items-center">
           <input
             type="text"
             value={searchTerm}
             onChange={handleSearch}
-            placeholder="Search by email..."
-            className="px-4 py-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-700"
+            placeholder="Search by email or username..."
+            className="px-4 py-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-700 w-full sm:w-auto"
           />
           <input
             type="date"
             value={filterDate}
             onChange={handleDateFilter}
-            className="px-4 py-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-700"
+            className="px-4 py-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-700 w-full sm:w-auto"
           />
           <button
             onClick={handleClearAll}
-            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded w-full sm:w-auto"
           >
             Clear All
           </button>
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto rounded-md shadow">
           <table className="min-w-full border border-gray-200 text-sm text-left dark:bg-gray-800 dark:text-white">
             <thead>
               <tr className="bg-gray-100 border-b dark:bg-gray-700">
-                <th className="p-3">Email</th>
+                <th className="p-3">Email / Username</th>
                 <th className="p-3">Date</th>
                 <th className="p-3">Check In</th>
                 <th className="p-3">Check Out</th>
@@ -117,29 +121,35 @@ const AdminAttendance = () => {
             <tbody>
               {filteredData.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="p-4 text-center text-gray-500 dark:text-gray-400">
+                  <td
+                    colSpan="5"
+                    className="p-4 text-center text-gray-500 dark:text-gray-400"
+                  >
                     No attendance records found.
                   </td>
                 </tr>
               ) : (
-                [...filteredData]
-                  .reverse()
-                  .map((entry, idx) => (
-                    <tr key={idx} className="border-t border-gray-200 dark:border-gray-700">
-                      <td className="p-3">{entry.email}</td>
-                      <td className="p-3">{entry.date}</td>
-                      <td className="p-3">{entry.checkIn || "–"}</td>
-                      <td className="p-3">{entry.checkOut || "–"}</td>
-                      <td className="p-3">
-                        <button
-                          onClick={() => handleDelete(attendanceData.indexOf(entry))}
-                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))
+                [...filteredData].reverse().map((entry, idx) => (
+                  <tr
+                    key={idx}
+                    className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <td className="p-3">{entry.email || entry.username}</td>
+                    <td className="p-3">{entry.date}</td>
+                    <td className="p-3">{entry.checkIn || "–"}</td>
+                    <td className="p-3">{entry.checkOut || "–"}</td>
+                    <td className="p-3">
+                      <button
+                        onClick={() =>
+                          handleDelete(attendanceData.indexOf(entry))
+                        }
+                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
               )}
             </tbody>
           </table>
