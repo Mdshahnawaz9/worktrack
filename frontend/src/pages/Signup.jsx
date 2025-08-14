@@ -6,7 +6,7 @@ import { useDarkMode } from "../components/DarkModeProvider";
 const Signup = () => {
   const navigate = useNavigate();
   const { darkMode, toggleDarkMode } = useDarkMode();
-  const [form, setForm] = useState({ name: "", password: "" });
+  const [form, setForm] = useState({ email: "", name: "", password: "" });
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -14,20 +14,18 @@ const Signup = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Save user data
-    localStorage.setItem("user", JSON.stringify({ 
-      name: form.name, 
-      password: form.password 
-    }));
+    // Save user data in localStorage
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        email: form.email,
+        name: form.name,
+        password: form.password,
+      })
+    );
 
-    // Also mark as logged in immediately
-    localStorage.setItem("loggedInUser", JSON.stringify({ 
-      name: form.name, 
-      password: form.password 
-    }));
-
-    // Redirect to dashboard directly
-    navigate("/dashboard");
+    alert("Signup successful! Please login.");
+    navigate("/login");
   };
 
   return (
@@ -45,9 +43,20 @@ const Signup = () => {
         onSubmit={handleSubmit}
         className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md w-80 transition-colors duration-300"
       >
-        <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white transition-colors duration-300">
+        <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
           Sign Up
         </h2>
+
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+          required
+          className="w-full mb-3 p-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
+        />
+
         <input
           type="text"
           name="name"
@@ -55,8 +64,9 @@ const Signup = () => {
           value={form.name}
           onChange={handleChange}
           required
-          className="w-full mb-3 p-2 border rounded text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-300 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+          className="w-full mb-3 p-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
         />
+
         <input
           type="password"
           name="password"
@@ -64,14 +74,16 @@ const Signup = () => {
           value={form.password}
           onChange={handleChange}
           required
-          className="w-full mb-3 p-2 border rounded text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-300 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+          className="w-full mb-3 p-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
         />
+
         <button
           type="submit"
           className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600 transition-colors duration-300"
         >
           Sign Up
         </button>
+
         <p
           className="text-sm text-center mt-3 text-blue-500 cursor-pointer"
           onClick={() => navigate("/login")}
