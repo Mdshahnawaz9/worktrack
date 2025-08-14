@@ -1,47 +1,59 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDarkMode } from "../components/DarkModeProvider";
 
-const Signup = () => {
+export default function Signup() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { darkMode, toggleDarkMode } = useDarkMode();
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
-
-  const handleSubmit = (e) => {
+  const handleSignup = (e) => {
     e.preventDefault();
-    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-    if (existingUsers.some((u) => u.email === form.email)) {
-      alert("Email already registered!");
+
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const userExists = users.some((user) => user.email === email);
+
+    if (userExists) {
+      alert("User already exists!");
       return;
     }
-    const newUsers = [...existingUsers, form];
-    localStorage.setItem("users", JSON.stringify(newUsers));
+
+    const newUser = { email, password };
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
     alert("Signup successful! Please login.");
     navigate("/login");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-      <div className="absolute top-4 right-4">
-        <button onClick={toggleDarkMode} className="p-2 bg-gray-300 dark:bg-gray-700 rounded">
-          {darkMode ? "🌙" : "☀️"}
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <form
+        onSubmit={handleSignup}
+        className="bg-white p-8 rounded-lg shadow-lg w-96"
+      >
+        <h2 className="text-2xl font-bold mb-6 text-center">Signup</h2>
+        <input
+          type="email"
+          placeholder="Email"
+          className="border p-2 w-full mb-4 rounded"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          className="border p-2 w-full mb-4 rounded"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <button
+          type="submit"
+          className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700"
+        >
+          Signup
         </button>
-      </div>
-      <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md w-80">
-        <h2 className="text-xl font-bold mb-4">Sign Up</h2>
-        <input type="text" name="name" placeholder="Name" onChange={handleChange} required className="w-full mb-3 p-2 border rounded dark:bg-gray-700"/>
-        <input type="email" name="email" placeholder="Email" onChange={handleChange} required className="w-full mb-3 p-2 border rounded dark:bg-gray-700"/>
-        <input type="password" name="password" placeholder="Password" onChange={handleChange} required className="w-full mb-3 p-2 border rounded dark:bg-gray-700"/>
-        <button type="submit" className="w-full bg-green-500 text-white p-2 rounded">Sign Up</button>
-        <p className="text-sm text-center mt-3 text-blue-500 cursor-pointer" onClick={() => navigate("/login")}>
-          Already have an account? Login
-        </p>
       </form>
     </div>
   );
-};
-
-export default Signup;
+}
