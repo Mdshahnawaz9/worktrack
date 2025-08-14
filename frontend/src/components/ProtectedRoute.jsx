@@ -1,20 +1,20 @@
-
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
-const ProtectedRoute = ({ children, role }) => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  const storedRole = localStorage.getItem("role");
+/**
+ * Optional alternative guard (if you prefer Route wrappers).
+ * Usage:
+ * <Route path="/admin/..." element={<ProtectedRoute admin><AdminPage/></ProtectedRoute>} />
+ */
+export default function ProtectedRoute({ admin = false, children }) {
+  const location = useLocation();
+  const user = JSON.parse(localStorage.getItem("loggedInUser"));
 
   if (!user) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" replace state={{ from: location }} />;
   }
-
-  if (role && storedRole !== role) {
-    return <Navigate to="/login" />;
+  if (admin && user.role !== "admin") {
+    return <Navigate to="/dashboard" replace />;
   }
-
   return children;
-};
-
-export default ProtectedRoute;
+}
