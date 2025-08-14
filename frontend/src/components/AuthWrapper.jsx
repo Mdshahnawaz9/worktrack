@@ -1,18 +1,24 @@
-// src/components/AuthWrapper.jsx
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const AuthWrapper = ({ children }) => {
+/**
+ * Guards routes using localStorage-based auth.
+ * If path starts with /admin, user.role must be 'admin'.
+ */
+export default function AuthWrapper({ children }) {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
+    const user = JSON.parse(localStorage.getItem("loggedInUser"));
     if (!user) {
-      navigate("/login");
+      navigate("/login", { replace: true });
+      return;
     }
-  }, [navigate]);
+    if (pathname.startsWith("/admin") && user.role !== "admin") {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [navigate, pathname]);
 
   return <>{children}</>;
-};
-
-export default AuthWrapper;
+}
