@@ -18,9 +18,11 @@ export default function Signup() {
       return;
     }
 
+    // Default role = user (change manually in localStorage if admin)
     const newUser = { name, email, password, role: "user" };
     users.push(newUser);
     localStorage.setItem("users", JSON.stringify(users));
+
     alert("Signup successful! Please login.");
     navigate("/login");
   };
