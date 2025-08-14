@@ -1,16 +1,17 @@
-// src/components/StatCard.jsx
 import React from "react";
 
-const StatCard = ({ title, value, icon }) => {
+export default function StatCard({ title, value, onClick, color = "indigo" }) {
+  const clickable = typeof onClick === "function";
+  const base =
+    "rounded-xl shadow p-4 sm:p-5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 transition";
+  const hover = clickable ? " cursor-pointer hover:shadow-md" : "";
+
   return (
-    <div className="flex items-center gap-4 p-4 rounded-2xl shadow-md bg-white dark:bg-gray-800 transition-colors duration-300">
-      <div className="text-4xl">{icon}</div>
-      <div>
-        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200">{title}</h3>
-        <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{value}</p>
-      </div>
+    <div className={base + hover} onClick={onClick}>
+      <p className="text-sm text-gray-500 dark:text-gray-400">{title}</p>
+      <p className={`mt-2 text-2xl font-bold text-${color}-600 dark:text-${color}-400`}>
+        {value}
+      </p>
     </div>
   );
-};
-
-export default StatCard;
+}
