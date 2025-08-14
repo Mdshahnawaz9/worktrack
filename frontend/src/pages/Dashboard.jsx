@@ -1,66 +1,72 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import StatCard from "../components/StatCard";
-import { useNavigate } from "react-router-dom";
 
-const Dashboard = () => {
+export default function Dashboard() {
   const navigate = useNavigate();
-  const [user, setUser] = useState({});
-  const [tasks, setTasks] = useState([]);
-  const [attendance, setAttendance] = useState([]);
-  const [documents, setDocuments] = useState([]);
-  const [leaves, setLeaves] = useState([]);
-  const [feedbacks, setFeedbacks] = useState([]);
+  const [userName, setUserName] = useState("");
+  const [attendanceCount, setAttendanceCount] = useState(0);
+  const [taskCount, setTaskCount] = useState(0);
+  const [leaveCount, setLeaveCount] = useState(0);
+  const [feedbackCount, setFeedbackCount] = useState(0);
 
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("loggedInUser")) || {};
-    setUser(userData);
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (!loggedInUser) {
+      navigate("/login");
+      return;
+    }
+    setUserName(loggedInUser.name || "User");
 
-    const allTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    setTasks(allTasks.filter((task) => task.assignedTo === userData.email));
+    // Attendance Data
+    const attendanceData = JSON.parse(localStorage.getItem("attendance")) || [];
+    const userAttendance = attendanceData.filter(a => a.email === loggedInUser.email);
+    setAttendanceCount(userAttendance.length);
 
-    const allAttendance = JSON.parse(localStorage.getItem("attendance")) || [];
-    setAttendance(allAttendance.filter((entry) => entry.email === userData.email));
+    // Task Data
+    const taskData = JSON.parse(localStorage.getItem("tasks")) || [];
+    const userTasks = taskData.filter(t => t.assignedTo === loggedInUser.email);
+    setTaskCount(userTasks.length);
 
-    const allDocs = JSON.parse(localStorage.getItem("documents")) || [];
-    setDocuments(allDocs.filter((doc) => doc.email === userData.email));
+    // Leave Requests
+    const leaveData = JSON.parse(localStorage.getItem("leaveRequests")) || [];
+    const userLeaves = leaveData.filter(l => l.email === loggedInUser.email);
+    setLeaveCount(userLeaves.length);
 
-    const allLeaves = JSON.parse(localStorage.getItem("leaveRequests")) || [];
-    setLeaves(allLeaves.filter((leave) => leave.email === userData.email));
-
-    const allFeedbacks = JSON.parse(localStorage.getItem("feedbacks")) || [];
-    setFeedbacks(allFeedbacks.filter((fb) => fb.email === userData.email));
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("loggedInUser");
-    navigate("/login");
-  };
+    // Feedback
+    const feedbackData = JSON.parse(localStorage.getItem("feedbacks")) || [];
+    const userFeedbacks = feedbackData.filter(f => f.email === loggedInUser.email);
+    setFeedbackCount(userFeedbacks.length);
+  }, [navigate]);
 
   return (
     <Layout>
-      <div className="p-4">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">
-            Welcome, {user.name || "Employee"}!
-          </h1>
-          <button
-            onClick={handleLogout}
-            className="bg-red-600 text-white px-4 py-2 rounded"
-          >
-            Logout
-          </button>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          <StatCard title="My Tasks" value={tasks.length} />
-          <StatCard title="Attendance Records" value={attendance.length} />
-          <StatCard title="My Documents" value={documents.length} />
-          <StatCard title="Leave Requests" value={leaves.length} />
-          <StatCard title="My Feedback" value={feedbacks.length} />
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-6">Welcome, {userName} 👋</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StatCard
+            title="Attendance Records"
+            value={attendanceCount}
+            onClick={() => navigate("/attendance")}
+          />
+          <StatCard
+            title="My Tasks"
+            value={taskCount}
+            onClick={() => navigate("/tasks")}
+          />
+          <StatCard
+            title="Leave Requests"
+            value={leaveCount}
+            onClick={() => navigate("/leave")}
+          />
+          <StatCard
+            title="Feedback Given"
+            value={feedbackCount}
+            onClick={() => navigate("/feedback")}
+          />
         </div>
       </div>
     </Layout>
   );
-};
-
-export default Dashboard;
+}
