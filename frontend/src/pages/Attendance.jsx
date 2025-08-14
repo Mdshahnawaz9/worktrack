@@ -1,10 +1,13 @@
+// src/pages/Attendance.jsx
 import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
+import Button from "../components/ui/Button";
+import Card from "../components/ui/Card";
 
-const Attendance = () => {
+export default function Attendance() {
   const [user, setUser] = useState(null);
   const [todayRecord, setTodayRecord] = useState(null);
-  const [loading, setLoading] = useState(true); // Added to prevent premature alert
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     try {
@@ -27,7 +30,6 @@ const Attendance = () => {
         }
       }
 
-      // Only runs if no valid user is found at all
       alert("Please log in first!");
       window.location.href = "/login";
     } catch (err) {
@@ -87,37 +89,34 @@ const Attendance = () => {
     updateLocalStorage(record);
   };
 
-  if (loading) return null; // Prevent UI flash while checking login
+  if (loading) return null;
 
   return (
     <Layout>
-      <div className="p-4">
-        <h1 className="text-2xl font-semibold mb-6">Attendance</h1>
+      <div className="p-4 sm:p-6">
+        <h1 className="text-2xl sm:text-3xl font-semibold mb-6">
+          Attendance
+        </h1>
 
-        <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 transition-colors">
+        <Card>
           <p className="text-lg dark:text-gray-200">
-            Welcome, <span className="font-semibold">{user?.username}</span>
+            Welcome,{" "}
+            <span className="font-semibold">{user?.username}</span>
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Date: {new Date().toLocaleDateString()}
           </p>
 
-          <div className="mt-6 flex gap-4">
-            <button
-              onClick={handleCheckIn}
-              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded transition"
-            >
+          <div className="mt-6 flex flex-col sm:flex-row gap-4">
+            <Button variant="success" onClick={handleCheckIn}>
               Check In
-            </button>
-            <button
-              onClick={handleCheckOut}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition"
-            >
+            </Button>
+            <Button variant="primary" onClick={handleCheckOut}>
               Check Out
-            </button>
+            </Button>
           </div>
 
-          <div className="mt-6">
+          <div className="mt-6 space-y-2">
             <p className="dark:text-gray-200">
               <strong>Check In:</strong> {todayRecord?.checkIn || "—"}
             </p>
@@ -125,10 +124,8 @@ const Attendance = () => {
               <strong>Check Out:</strong> {todayRecord?.checkOut || "—"}
             </p>
           </div>
-        </div>
+        </Card>
       </div>
     </Layout>
   );
-};
-
-export default Attendance;
+}
