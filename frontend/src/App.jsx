@@ -21,7 +21,6 @@ import NotFound from './pages/NotFound';
 import { DarkModeProvider } from './components/DarkModeProvider';
 import ProtectedRoute from './components/ProtectedRoute';
 
-// Simple check if user is logged in
 const isAuthenticated = () => {
   return localStorage.getItem("loggedInUser") !== null;
 };
@@ -31,8 +30,7 @@ function App() {
     <DarkModeProvider>
       <Router>
         <Routes>
-
-          {/* ✅ Public Routes */}
+          {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route
             path="/login"
@@ -43,7 +41,7 @@ function App() {
             element={isAuthenticated() ? <Navigate to="/dashboard" /> : <Signup />}
           />
 
-          {/* ✅ Protected User Routes */}
+          {/* User Routes */}
           <Route
             path="/dashboard"
             element={
@@ -101,7 +99,7 @@ function App() {
             }
           />
 
-          {/* ✅ Protected Admin Routes */}
+          {/* Admin Routes */}
           <Route
             path="/admindashboard"
             element={
@@ -151,9 +149,8 @@ function App() {
             }
           />
 
-          {/* ✅ 404 Fallback */}
+          {/* 404 */}
           <Route path="*" element={<NotFound />} />
-
         </Routes>
       </Router>
     </DarkModeProvider>
