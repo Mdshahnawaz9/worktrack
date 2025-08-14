@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -21,6 +21,11 @@ import NotFound from './pages/NotFound';
 import { DarkModeProvider } from './components/DarkModeProvider';
 import ProtectedRoute from './components/ProtectedRoute';
 
+// Simple check if user is logged in
+const isAuthenticated = () => {
+  return localStorage.getItem("loggedInUser") !== null;
+};
+
 function App() {
   return (
     <DarkModeProvider>
@@ -29,12 +34,18 @@ function App() {
 
           {/* ✅ Public Routes */}
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route
+            path="/login"
+            element={isAuthenticated() ? <Navigate to="/dashboard" /> : <Login />}
+          />
+          <Route
+            path="/signup"
+            element={isAuthenticated() ? <Navigate to="/dashboard" /> : <Signup />}
+          />
 
           {/* ✅ Protected User Routes */}
           <Route
-            path="/Dashboard"
+            path="/dashboard"
             element={
               <ProtectedRoute role="user">
                 <Dashboard />
@@ -42,7 +53,7 @@ function App() {
             }
           />
           <Route
-            path="/Tasks"
+            path="/tasks"
             element={
               <ProtectedRoute role="user">
                 <Tasks />
@@ -50,7 +61,7 @@ function App() {
             }
           />
           <Route
-            path="/MyDocuments"
+            path="/mydocuments"
             element={
               <ProtectedRoute role="user">
                 <MyDocuments />
@@ -58,7 +69,7 @@ function App() {
             }
           />
           <Route
-            path="/Attendance"
+            path="/attendance"
             element={
               <ProtectedRoute role="user">
                 <Attendance />
@@ -66,7 +77,7 @@ function App() {
             }
           />
           <Route
-            path="/LeaveRequests"
+            path="/leaverequests"
             element={
               <ProtectedRoute role="user">
                 <LeaveRequests />
@@ -74,7 +85,7 @@ function App() {
             }
           />
           <Route
-            path="/Feedback"
+            path="/feedback"
             element={
               <ProtectedRoute role="user">
                 <Feedback />
@@ -82,7 +93,7 @@ function App() {
             }
           />
           <Route
-            path="/Profile"
+            path="/profile"
             element={
               <ProtectedRoute role="user">
                 <Profile />
@@ -92,7 +103,7 @@ function App() {
 
           {/* ✅ Protected Admin Routes */}
           <Route
-            path="/AdminDashboard"
+            path="/admindashboard"
             element={
               <ProtectedRoute role="admin">
                 <AdminDashboard />
@@ -100,7 +111,7 @@ function App() {
             }
           />
           <Route
-            path="/AdminTasks"
+            path="/admintasks"
             element={
               <ProtectedRoute role="admin">
                 <AdminTasks />
@@ -108,7 +119,7 @@ function App() {
             }
           />
           <Route
-            path="/AdminMyDocuments"
+            path="/adminmydocuments"
             element={
               <ProtectedRoute role="admin">
                 <AdminMyDocuments />
@@ -116,7 +127,7 @@ function App() {
             }
           />
           <Route
-            path="/AdminAttendance"
+            path="/adminattendance"
             element={
               <ProtectedRoute role="admin">
                 <AdminAttendance />
@@ -124,7 +135,7 @@ function App() {
             }
           />
           <Route
-            path="/AdminLeaveRequests"
+            path="/adminleaverequests"
             element={
               <ProtectedRoute role="admin">
                 <AdminLeaveRequests />
@@ -132,7 +143,7 @@ function App() {
             }
           />
           <Route
-            path="/AdminFeedback"
+            path="/adminfeedback"
             element={
               <ProtectedRoute role="admin">
                 <AdminFeedback />
