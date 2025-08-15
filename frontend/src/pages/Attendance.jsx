@@ -1,8 +1,8 @@
 // src/pages/Attendance.jsx
 import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
-import Button from "../components/ui/Button";
-import Card from "../components/ui/Card";
+import Button from "../components/Button";
+import Card from "../components/Card";
 
 export default function Attendance() {
   const [user, setUser] = useState(null);
