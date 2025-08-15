@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
-import StatCard from "../components/StatCard";
+import Card from "../components/ui/Card";
+import Button from "../components/ui/Button";
 
-const AdminLeaveRequests = () => {
+export default function AdminLeaveRequests() {
   const [leaveRequests, setLeaveRequests] = useState([]);
 
   useEffect(() => {
@@ -10,25 +11,37 @@ const AdminLeaveRequests = () => {
     setLeaveRequests(stored);
   }, []);
 
-  const handleStatusChange = (index, status) => {
+  const updateStatus = (index, status) => {
     const updated = [...leaveRequests];
     updated[index].status = status;
     setLeaveRequests(updated);
     localStorage.setItem("leaveRequests", JSON.stringify(updated));
   };
 
+  const handleDelete = (index) => {
+    if (window.confirm("Delete this request?")) {
+      const updated = [...leaveRequests];
+      updated.splice(index, 1);
+      setLeaveRequests(updated);
+      localStorage.setItem("leaveRequests", JSON.stringify(updated));
+    }
+  };
+
   return (
     <Layout>
       <div className="p-4 space-y-6">
-        <StatCard title="Total Requests" value={leaveRequests.length} />
+        <Card title="Total Leave Requests">
+          <p className="text-2xl font-bold">{leaveRequests.length}</p>
+        </Card>
 
-        <div className="bg-white dark:bg-gray-800 p-4 rounded shadow">
-          <h2 className="text-xl font-semibold mb-4">All Leave Requests</h2>
+        <Card title="All Requests">
           {leaveRequests.length === 0 ? (
-            <p className="text-gray-500 dark:text-gray-300">No requests found.</p>
+            <p className="text-gray-500 dark:text-gray-300">
+              No requests found.
+            </p>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full table-auto border-collapse text-sm">
+              <table className="w-full text-sm table-auto">
                 <thead>
                   <tr className="bg-gray-200 dark:bg-gray-700 text-left">
                     <th className="border px-4 py-2">Username</th>
@@ -40,29 +53,42 @@ const AdminLeaveRequests = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {leaveRequests.map((leave, index) => (
-                    <tr key={index} className="text-center border-t dark:border-gray-700">
+                  {leaveRequests.map((leave, idx) => (
+                    <tr
+                      key={idx}
+                      className="border-t text-center dark:border-gray-700"
+                    >
                       <td className="px-4 py-2">{leave.username}</td>
                       <td className="px-4 py-2">{leave.from}</td>
                       <td className="px-4 py-2">{leave.to}</td>
                       <td className="px-4 py-2">{leave.reason}</td>
                       <td className="px-4 py-2 font-semibold">{leave.status}</td>
-                      <td className="px-4 py-2 space-x-2">
-                        {leave.status === "Pending" && (
+                      <td className="px-2 py-2 space-x-1">
+                        {leave.status === "Pending" ? (
                           <>
-                            <button
-                              onClick={() => handleStatusChange(index, "Approved")}
-                              className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                            <Button
+                              variant="success"
+                              className="text-xs"
+                              onClick={() => updateStatus(idx, "Approved")}
                             >
                               Approve
-                            </button>
-                            <button
-                              onClick={() => handleStatusChange(index, "Rejected")}
-                              className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                            </Button>
+                            <Button
+                              variant="danger"
+                              className="text-xs"
+                              onClick={() => updateStatus(idx, "Rejected")}
                             >
                               Reject
-                            </button>
+                            </Button>
                           </>
+                        ) : (
+                          <Button
+                            variant="danger"
+                            className="text-xs"
+                            onClick={() => handleDelete(idx)}
+                          >
+                            Delete
+                          </Button>
                         )}
                       </td>
                     </tr>
@@ -71,10 +97,8 @@ const AdminLeaveRequests = () => {
               </table>
             </div>
           )}
-        </div>
+        </Card>
       </div>
     </Layout>
   );
-};
-
-export default AdminLeaveRequests;
+}
