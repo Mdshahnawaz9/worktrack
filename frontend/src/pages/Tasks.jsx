@@ -1,111 +1,121 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
+import Card from "../components/Card";
+import Button from "../components/Button";
 import StatCard from "../components/StatCard";
 
-const Tasks = () => {
+export default function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const currentUser = JSON.parse(localStorage.getItem("loggedInUser"));
     setUser(currentUser);
 
     if (currentUser) {
-      const storedTasks = JSON.parse(localStorage.getItem(`tasks-${currentUser.username}`)) || [];
-      setTasks(storedTasks);
+      const stored = JSON.parse(
+        localStorage.getItem(`tasks-${currentUser.username}`)
+      ) || [];
+      setTasks(stored);
     }
   }, []);
 
   const addTask = () => {
     if (newTask.trim() === "") return;
-
-    const updatedTasks = [...tasks, { task: newTask, completed: false }];
-    setTasks(updatedTasks);
-    localStorage.setItem(`tasks-${user.username}`, JSON.stringify(updatedTasks));
+    const updated = [...tasks, { task: newTask, completed: false }];
+    setTasks(updated);
+    localStorage.setItem(`tasks-${user.username}`, JSON.stringify(updated));
     setNewTask("");
   };
 
-  const toggleComplete = (index) => {
-    const updatedTasks = tasks.map((t, i) =>
-      i === index ? { ...t, completed: !t.completed } : t
+  const toggleComplete = (i) => {
+    const updated = tasks.map((t, idx) =>
+      idx === i ? { ...t, completed: !t.completed } : t
     );
-    setTasks(updatedTasks);
-    localStorage.setItem(`tasks-${user.username}`, JSON.stringify(updatedTasks));
+    setTasks(updated);
+    localStorage.setItem(`tasks-${user.username}`, JSON.stringify(updated));
   };
 
-  const deleteTask = (index) => {
-    const updatedTasks = tasks.filter((_, i) => i !== index);
-    setTasks(updatedTasks);
-    localStorage.setItem(`tasks-${user.username}`, JSON.stringify(updatedTasks));
+  const deleteTask = (i) => {
+    const updated = tasks.filter((_, idx) => idx !== i);
+    setTasks(updated);
+    localStorage.setItem(`tasks-${user.username}`, JSON.stringify(updated));
   };
 
   return (
     <Layout>
-      <h1 className="text-2xl font-bold mb-4">My Tasks</h1>
+      <div className="p-4 space-y-6">
+        <h1 className="text-2xl font-semibold">My Tasks</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <StatCard title="Total Tasks" value={tasks.length} />
-        <StatCard title="Completed" value={tasks.filter((t) => t.completed).length} />
-        <StatCard title="Pending" value={tasks.filter((t) => !t.completed).length} />
-      </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <StatCard title="Total Tasks" value={tasks.length} />
+          <StatCard
+            title="Completed"
+            value={tasks.filter((t) => t.completed).length}
+          />
+          <StatCard
+            title="Pending"
+            value={tasks.filter((t) => !t.completed).length}
+          />
+        </div>
 
-      <div className="mb-6 flex gap-2">
-        <input
-          type="text"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-          placeholder="Enter new task"
-          className="border rounded px-3 py-2 w-full"
-        />
-        <button
-          onClick={addTask}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Add
-        </button>
-      </div>
+        {/* Create new Task */}
+        <Card>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <input
+              type="text"
+              value={newTask}
+              onChange={(e) => setNewTask(e.target.value)}
+              placeholder="Enter new task"
+              className="border rounded px-3 py-2 w-full"
+            />
+            <Button variant="primary" className="w-full sm:w-auto" onClick={addTask}>
+              Add Task
+            </Button>
+          </div>
+        </Card>
 
-      <div className="space-y-2">
-        {tasks.length === 0 ? (
-          <p className="text-gray-500">No tasks available.</p>
-        ) : (
-          tasks.map((task, index) => (
-            <div
-              key={index}
-              className="flex justify-between items-center bg-white rounded shadow px-4 py-2"
-            >
-              <span
-                className={`${
-                  task.completed ? "line-through text-gray-400" : ""
-                }`}
-              >
-                {task.task}
-              </span>
-              <div className="space-x-2">
-                <button
-                  onClick={() => toggleComplete(index)}
-                  className={`${
-                    task.completed
-                      ? "bg-yellow-500 hover:bg-yellow-600"
-                      : "bg-green-500 hover:bg-green-600"
-                  } text-white px-3 py-1 rounded`}
+        {/* Tasks list */}
+        <Card title="Task List">
+          {tasks.length === 0 ? (
+            <p className="text-gray-500 dark:text-gray-300">No tasks available.</p>
+          ) : (
+            <div className="space-y-2">
+              {tasks.map((t, i) => (
+                <div
+                  key={i}
+                  className="flex justify-between items-center bg-white dark:bg-gray-800 rounded px-4 py-2 shadow"
                 >
-                  {task.completed ? "Undo" : "Done"}
-                </button>
-                <button
-                  onClick={() => deleteTask(index)}
-                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-                >
-                  Delete
-                </button>
-              </div>
+                  <span
+                    className={`flex-1 ${
+                      t.completed ? "line-through text-gray-400" : ""
+                    }`}
+                  >
+                    {t.task}
+                  </span>
+                  <div className="flex gap-2">
+                    <Button
+                      variant={t.completed ? "secondary" : "success"}
+                      onClick={() => toggleComplete(i)}
+                      className="text-xs"
+                    >
+                      {t.completed ? "Undo" : "Done"}
+                    </Button>
+                    <Button
+                      variant="danger"
+                      onClick={() => deleteTask(i)}
+                      className="text-xs"
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))
-        )}
+          )}
+        </Card>
       </div>
     </Layout>
   );
-};
-
-export default Tasks;
+}
