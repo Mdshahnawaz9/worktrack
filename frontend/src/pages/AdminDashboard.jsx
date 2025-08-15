@@ -32,13 +32,13 @@ const AdminDashboard = () => {
         navigate("/admin/employees");
         break;
       case "tasks":
-        navigate("/admin/tasks");
+        navigate("/AdminTasks");
         break;
       case "projects":
         navigate("/admin/projects");
         break;
       case "leaves":
-        navigate("/admin/leave-requests");
+        navigate("/AdminLeaveRequests");
         break;
       default:
         break;
