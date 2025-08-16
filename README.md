@@ -9,7 +9,7 @@ This project is built to showcase UI/UX skills, JavaScript logic, and frontend d
 🚀 Features
 
 👨‍💼 Employee Features
-	•	Dashboard – Clean and user-friendly overview with quick access to all pages.
+	•	Dashboard – Clean and user-friendly overview with quick access to all pages.<br>
 	•	Attendance – Mark check-in/check-out and view work hours summary.
 	•	Leave Requests – Apply for leaves and view request history.
 	•	Tasks – View, update, and manage assigned tasks.
