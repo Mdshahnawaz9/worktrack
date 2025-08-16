@@ -8,22 +8,22 @@ This project is built to showcase UI/UX skills, JavaScript logic, and frontend d
 
 🚀 Features
 
-👨‍💼 Employee Features
+👨‍💼 Employee Features <br>
 	•	Dashboard – Clean and user-friendly overview with quick access to all pages.<br>
-	•	Attendance – Mark check-in/check-out and view work hours summary.
-	•	Leave Requests – Apply for leaves and view request history.
-	•	Tasks – View, update, and manage assigned tasks.
-	•	Feedback – Share thoughts and improvement suggestions with management.
-	•	Profile Page – Edit personal details, view profile info.
-	•	Document Upload – Upload and manage important work-related documents.
+	•	Attendance – Mark check-in/check-out and view work hours summary.<br>
+	•	Leave Requests – Apply for leaves and view request history.<br>
+	•	Tasks – View, update, and manage assigned tasks.<br>
+	•	Feedback – Share thoughts and improvement suggestions with management.<br>
+	•	Profile Page – Edit personal details, view profile info.<br>
+	•	Document Upload – Upload and manage important work-related documents.<br>
 
-🛠️ Admin Features
-	•	Admin Dashboard – Centralized control panel for managing employees.
-	•	Attendance Management – Access all employee attendance logs.
-	•	Leave Approvals – Approve or reject leave requests.
-	•	Task Assignment – Assign and manage tasks for employees.
-	•	Feedback Review – Read and analyze employee feedback.
-	•	Document Management – View and organize uploaded documents.
+🛠️ Admin Features<br>
+	•	Admin Dashboard – Centralized control panel for managing employees.<br>
+	•	Attendance Management – Access all employee attendance logs.<br>
+	•	Leave Approvals – Approve or reject leave requests.<br>
+	•	Task Assignment – Assign and manage tasks for employees.<br>
+	•	Feedback Review – Read and analyze employee feedback.<br>
+	•	Document Management – View and organize uploaded documents.<br>
 
 ⸻
 
