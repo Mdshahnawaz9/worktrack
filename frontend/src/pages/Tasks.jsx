@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
-import Card from "../components/Card";
-import Button from "../components/Button";
+import Card from "../components/ui/Card";
+import Button from "../components/ui/Button";
 import StatCard from "../components/StatCard";
 
 export default function Tasks() {
@@ -50,17 +50,11 @@ export default function Tasks() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <StatCard title="Total Tasks" value={tasks.length} />
-          <StatCard
-            title="Completed"
-            value={tasks.filter((t) => t.completed).length}
-          />
-          <StatCard
-            title="Pending"
-            value={tasks.filter((t) => !t.completed).length}
-          />
+          <StatCard title="Completed" value={tasks.filter((t) => t.completed).length} />
+          <StatCard title="Pending" value={tasks.filter((t) => !t.completed).length} />
         </div>
 
-        {/* Create new Task */}
+        {/* New task input */}
         <Card>
           <div className="flex flex-col sm:flex-row gap-3">
             <input
@@ -68,15 +62,21 @@ export default function Tasks() {
               value={newTask}
               onChange={(e) => setNewTask(e.target.value)}
               placeholder="Enter new task"
-              className="border rounded px-3 py-2 w-full"
+              className="border rounded px-3 py-2 w-full 
+                         bg-white text-black 
+                         dark:bg-gray-700 dark:text-white dark:border-gray-600"
             />
-            <Button variant="primary" className="w-full sm:w-auto" onClick={addTask}>
+            <Button
+              variant="primary"
+              className="w-full sm:w-auto"
+              onClick={addTask}
+            >
               Add Task
             </Button>
           </div>
         </Card>
 
-        {/* Tasks list */}
+        {/* Task list */}
         <Card title="Task List">
           {tasks.length === 0 ? (
             <p className="text-gray-500 dark:text-gray-300">No tasks available.</p>
