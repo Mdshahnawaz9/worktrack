@@ -7,22 +7,22 @@ export default function Sidebar({ open, onClose }) {
   const isAdmin = user?.role === "admin";
 
   const userNav = [
-    { name: "Dashboard", path: "/Dashboard" },
-    { name: "Attendance", path: "/Attendance" },
-    { name: "Tasks", path: "/Tasks" },
-    { name: "My Documents", path: "/MyDocuments" },
-    { name: "Leave Requests", path: "/LeaveRequests" },
-    { name: "Feedback", path: "/Feedback" },
-    { name: "Profile", path: "/Profile" },
+    { name: "Dashboard", path: "/dashboard" },
+    { name: "Attendance", path: "/attendance" },
+    { name: "Tasks", path: "/tasks" },
+    { name: "My Documents", path: "/mydocuments" },
+    { name: "Leave Requests", path: "/leaverequests" },
+    { name: "Feedback", path: "/feedback" },
+    { name: "Profile", path: "/profile" },
   ];
 
   const adminNav = [
-    { name: "Admin Dashboard", path: "/AdminDashboard" },
-    { name: "Attendance", path: "/AdminAttendance" },
-    { name: "Tasks", path: "/AdminTasks" },
-    { name: "Documents", path: "/AdminMyDocuments" },
-    { name: "Leave Requests", path: "/AdminLeaveRequests" },
-    { name: "Feedback", path: "/AdminFeedback" },
+    { name: "Admin Dashboard", path: "/admindashboard" },
+    { name: "Attendance", path: "/adminattendance" },
+    { name: "Tasks", path: "/admintasks" },
+    { name: "Documents", path: "/adminmydocuments" },
+    { name: "Leave Requests", path: "/adminleaverequests" },
+    { name: "Feedback", path: "/adminfeedback" },
   ];
 
   const links = isAdmin ? adminNav : userNav;
@@ -45,7 +45,6 @@ export default function Sidebar({ open, onClose }) {
 
   return (
     <>
-      {/* overlay for mobile */}
       {open && (
         <div
           className="fixed inset-0 bg-black/40 z-40 sm:hidden"
