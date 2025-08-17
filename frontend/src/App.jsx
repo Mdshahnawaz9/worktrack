@@ -1,25 +1,30 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import Dashboard from './pages/Dashboard';
-import Tasks from './pages/Tasks';
-import MyDocuments from './pages/MyDocuments';
-import Attendance from './pages/Attendance';
-import LeaveRequests from './pages/LeaveRequests';
-import Feedback from './pages/Feedback';
-import Profile from './pages/Profile';
-import AdminDashboard from './pages/AdminDashboard';
-import AdminTasks from './pages/AdminTasks';
-import AdminMyDocuments from './pages/AdminMyDocuments';
-import AdminAttendance from './pages/AdminAttendance';
-import AdminLeaveRequests from './pages/AdminLeaveRequests';
-import AdminFeedback from './pages/AdminFeedback';
-import NotFound from './pages/NotFound';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Dashboard from "./pages/Dashboard";
+import Tasks from "./pages/Tasks";
+import MyDocuments from "./pages/MyDocuments";
+import Attendance from "./pages/Attendance";
+import LeaveRequests from "./pages/LeaveRequests";
+import Feedback from "./pages/Feedback";
+import Profile from "./pages/Profile";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminTasks from "./pages/AdminTasks";
+import AdminMyDocuments from "./pages/AdminMyDocuments";
+import AdminAttendance from "./pages/AdminAttendance";
+import AdminLeaveRequests from "./pages/AdminLeaveRequests";
+import AdminFeedback from "./pages/AdminFeedback";
+import NotFound from "./pages/NotFound";
 
-import { DarkModeProvider } from './components/DarkModeProvider';
-import ProtectedRoute from './components/ProtectedRoute';
+import { DarkModeProvider } from "./components/DarkModeProvider";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const isAuthenticated = () => {
   return localStorage.getItem("loggedInUser") !== null;
@@ -45,7 +50,7 @@ function App() {
           <Route
             path="/dashboard"
             element={
-              <ProtectedRoute role="user">
+              <ProtectedRoute admin={false}>
                 <Dashboard />
               </ProtectedRoute>
             }
@@ -53,7 +58,7 @@ function App() {
           <Route
             path="/tasks"
             element={
-              <ProtectedRoute role="user">
+              <ProtectedRoute admin={false}>
                 <Tasks />
               </ProtectedRoute>
             }
@@ -61,7 +66,7 @@ function App() {
           <Route
             path="/mydocuments"
             element={
-              <ProtectedRoute role="user">
+              <ProtectedRoute admin={false}>
                 <MyDocuments />
               </ProtectedRoute>
             }
@@ -69,7 +74,7 @@ function App() {
           <Route
             path="/attendance"
             element={
-              <ProtectedRoute role="user">
+              <ProtectedRoute admin={false}>
                 <Attendance />
               </ProtectedRoute>
             }
@@ -77,7 +82,7 @@ function App() {
           <Route
             path="/leaverequests"
             element={
-              <ProtectedRoute role="user">
+              <ProtectedRoute admin={false}>
                 <LeaveRequests />
               </ProtectedRoute>
             }
@@ -85,7 +90,7 @@ function App() {
           <Route
             path="/feedback"
             element={
-              <ProtectedRoute role="user">
+              <ProtectedRoute admin={false}>
                 <Feedback />
               </ProtectedRoute>
             }
@@ -93,7 +98,7 @@ function App() {
           <Route
             path="/profile"
             element={
-              <ProtectedRoute role="user">
+              <ProtectedRoute admin={false}>
                 <Profile />
               </ProtectedRoute>
             }
@@ -103,7 +108,7 @@ function App() {
           <Route
             path="/admindashboard"
             element={
-              <ProtectedRoute role="admin">
+              <ProtectedRoute admin={true}>
                 <AdminDashboard />
               </ProtectedRoute>
             }
@@ -111,7 +116,7 @@ function App() {
           <Route
             path="/admintasks"
             element={
-              <ProtectedRoute role="admin">
+              <ProtectedRoute admin={true}>
                 <AdminTasks />
               </ProtectedRoute>
             }
@@ -119,7 +124,7 @@ function App() {
           <Route
             path="/adminmydocuments"
             element={
-              <ProtectedRoute role="admin">
+              <ProtectedRoute admin={true}>
                 <AdminMyDocuments />
               </ProtectedRoute>
             }
@@ -127,7 +132,7 @@ function App() {
           <Route
             path="/adminattendance"
             element={
-              <ProtectedRoute role="admin">
+              <ProtectedRoute admin={true}>
                 <AdminAttendance />
               </ProtectedRoute>
             }
@@ -135,7 +140,7 @@ function App() {
           <Route
             path="/adminleaverequests"
             element={
-              <ProtectedRoute role="admin">
+              <ProtectedRoute admin={true}>
                 <AdminLeaveRequests />
               </ProtectedRoute>
             }
@@ -143,13 +148,13 @@ function App() {
           <Route
             path="/adminfeedback"
             element={
-              <ProtectedRoute role="admin">
+              <ProtectedRoute admin={true}>
                 <AdminFeedback />
               </ProtectedRoute>
             }
           />
 
-          {/* 404 */}
+          {/* 404 Fallback */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
