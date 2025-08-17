@@ -1,129 +1,124 @@
-// src/pages/Attendance.jsx
 import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
-import Button from "../components/Button";
-import Card from "../components/Card";
+import Card from "../components/ui/Card";
+import Button from "../components/ui/Button";
 
 export default function Attendance() {
-  const [user, setUser] = useState(null);
+  const [records, setRecords] = useState([]);
   const [todayRecord, setTodayRecord] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    try {
-      const storedUser = localStorage.getItem("loggedInUser");
-      if (storedUser) {
-        const loggedInUser = JSON.parse(storedUser);
-        if (loggedInUser?.username) {
-          setUser(loggedInUser);
+    const currentUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    setUser(currentUser);
 
-          const allAttendance =
-            JSON.parse(localStorage.getItem("attendance")) || [];
-          const today = new Date().toLocaleDateString("en-CA");
-          const record = allAttendance.find(
-            (r) =>
-              r.username === loggedInUser.username && r.date === today
-          );
-          setTodayRecord(record || null);
-          setLoading(false);
-          return;
-        }
-      }
+    if (currentUser) {
+      const all = JSON.parse(localStorage.getItem("attendance")) || [];
+      const userRecords = all.filter(
+        (r) => r.username === currentUser.username
+      );
+      setRecords(userRecords);
 
-      alert("Please log in first!");
-      window.location.href = "/login";
-    } catch (err) {
-      console.error("Error reading localStorage:", err);
-      alert("Please log in first!");
-      window.location.href = "/login";
-    } finally {
-      setLoading(false);
+      const today = new Date().toLocaleDateString("en-CA");
+      const todays = userRecords.find((r) => r.date === today);
+      setTodayRecord(todays || null);
     }
   }, []);
 
-  const updateLocalStorage = (record) => {
-    const allAttendance = JSON.parse(localStorage.getItem("attendance")) || [];
-    const index = allAttendance.findIndex(
-      (r) => r.username === record.username && r.date === record.date
-    );
+  const updateStorage = (record) => {
+    const all = JSON.parse(localStorage.getItem("attendance")) || [];
+    const filteredAll = all.filter((r) => r.username !== record.username || r.date !== record.date);
+    filteredAll.push(record);
+    localStorage.setItem("attendance", JSON.stringify(filteredAll));
 
-    if (index >= 0) {
-      allAttendance[index] = record;
-    } else {
-      allAttendance.push(record);
-    }
-
-    localStorage.setItem("attendance", JSON.stringify(allAttendance));
+    // update UI
+    const userRecords = filteredAll.filter((r) => r.username === user.username);
+    setRecords(userRecords);
     setTodayRecord(record);
   };
 
   const handleCheckIn = () => {
+    const today = new Date().toLocaleDateString("en-CA");
     if (todayRecord?.checkIn) {
-      alert("You have already checked in today.");
+      alert("Already checked in today.");
       return;
     }
-
-    const record = todayRecord || {
+    const record = {
       username: user.username,
-      date: new Date().toLocaleDateString("en-CA"),
-      checkIn: "",
+      date: today,
+      checkIn: new Date().toLocaleTimeString(),
       checkOut: "",
     };
-
-    record.checkIn = new Date().toLocaleTimeString();
-    updateLocalStorage(record);
+    updateStorage(record);
   };
 
   const handleCheckOut = () => {
-    if (!todayRecord?.checkIn) {
-      alert("You need to check in first.");
-      return;
-    }
-    if (todayRecord?.checkOut) {
-      alert("You have already checked out today.");
-      return;
-    }
+    if (!todayRecord?.checkIn) return alert("Check in first.");
+    if (todayRecord?.checkOut) return alert("Already checked out.");
 
-    const record = { ...todayRecord };
-    record.checkOut = new Date().toLocaleTimeString();
-    updateLocalStorage(record);
+    const updated = { ...todayRecord, checkOut: new Date().toLocaleTimeString() };
+    updateStorage(updated);
   };
-
-  if (loading) return null;
 
   return (
     <Layout>
-      <div className="p-4 sm:p-6">
-        <h1 className="text-2xl sm:text-3xl font-semibold mb-6">
-          Attendance
-        </h1>
+      <div className="p-4 space-y-6">
+        <h1 className="text-2xl font-semibold">Attendance</h1>
 
+        {/* Action Card */}
         <Card>
-          <p className="text-lg dark:text-gray-200">
-            Welcome,{" "}
-            <span className="font-semibold">{user?.username}</span>
+          <p className="text-lg">
+            Hello, <strong>{user?.username}</strong>
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Date: {new Date().toLocaleDateString()}
           </p>
 
-          <div className="mt-6 flex flex-col sm:flex-row gap-4">
-            <Button variant="success" onClick={handleCheckIn}>
+          <div className="flex flex-col sm:flex-row gap-4 mt-4">
+            <Button onClick={handleCheckIn} variant="success">
               Check In
             </Button>
-            <Button variant="primary" onClick={handleCheckOut}>
+            <Button onClick={handleCheckOut} variant="primary">
               Check Out
             </Button>
           </div>
 
-          <div className="mt-6 space-y-2">
-            <p className="dark:text-gray-200">
-              <strong>Check In:</strong> {todayRecord?.checkIn || "—"}
+          <div className="mt-4 space-y-1">
+            <p>
+              <strong>Check In:</strong> {todayRecord?.checkIn || "–"}
             </p>
-            <p className="dark:text-gray-200">
-              <strong>Check Out:</strong> {todayRecord?.checkOut || "—"}
+            <p>
+              <strong>Check Out:</strong> {todayRecord?.checkOut || "–"}
             </p>
           </div>
+        </Card>
+
+        {/* History */}
+        <Card title="Attendance History">
+          {records.length === 0 ? (
+            <p className="text-gray-500 dark:text-gray-300">No records yet.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full table-auto text-sm">
+                <thead>
+                  <tr className="bg-gray-200 dark:bg-gray-700">
+                    <th className="border px-3 py-2">Date</th>
+                    <th className="border px-3 py-2">Check In</th>
+                    <th className="border px-3 py-2">Check Out</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...records].reverse().map((r, i) => (
+                    <tr key={i} className="text-center border-t dark:border-gray-700">
+                      <td className="px-3 py-2">{r.date}</td>
+                      <td className="px-3 py-2">{r.checkIn || "–"}</td>
+                      <td className="px-3 py-2">{r.checkOut || "–"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </Card>
       </div>
     </Layout>
