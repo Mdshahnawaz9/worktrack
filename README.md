@@ -63,7 +63,7 @@ GitHub Pages
 
 🔗 Live Project Demo: WorkTrackPro Deployment<br>
 
-(Replace the link above with your Netlify/Vercel/GitHub Pages deployed link)<br>
+(https://worktrack-by-shaaz.netlify.app/)<br>
 
 🌟 Future Enhancements<br>
 
